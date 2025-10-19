@@ -22,6 +22,9 @@ app.use(express.json());
 // Static folder for uploads
 app.use("backend/uploads", express.static(path.join(__dirname, "uploads")));
 
+// Connect DB
+connectDB();
+
 // Start the Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
