@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ViewBookPage = () => {
-  return (
-    <div>ViewBookPage</div>
-  )
-}
+  return <div>ViewBookPage</div>;
+};
 
-export default ViewBookPage
+export default ViewBookPage;

@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const SelectField = () => {
-  return (
-    <div>SelectField</div>
-  )
-}
+  return <div>SelectField</div>;
+};
 
-export default SelectField
+export default SelectField;

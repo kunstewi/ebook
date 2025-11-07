@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const TextareaField = () => {
-  return (
-    <div>TextareaField</div>
-  )
-}
+  return <div>TextareaField</div>;
+};
 
-export default TextareaField
+export default TextareaField;

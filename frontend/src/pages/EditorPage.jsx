@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const EditorPage = () => {
-  return (
-    <div>EditorPage</div>
-  )
-}
+  return <div>EditorPage</div>;
+};
 
 export default EditorPage

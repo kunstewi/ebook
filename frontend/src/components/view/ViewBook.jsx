@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ViewBook = () => {
-  return (
-    <div>ViewBook</div>
-  )
-}
+  return <div>ViewBook</div>;
+};
 
-export default ViewBook
+export default ViewBook;

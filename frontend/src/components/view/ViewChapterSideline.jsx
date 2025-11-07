@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ViewChapterSideline = () => {
-  return (
-    <div>ViewChapterSideline</div>
-  )
-}
+  return <div>ViewChapterSideline</div>;
+};
 
-export default ViewChapterSideline
+export default ViewChapterSideline;

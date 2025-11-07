@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const CreateBookModal = () => {
-  return (
-    <div>CreateBookModal</div>
-  )
-}
+  return <div>CreateBookModal</div>;
+};
 
-export default CreateBookModal
+export default CreateBookModal;
