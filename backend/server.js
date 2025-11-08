@@ -5,6 +5,7 @@ const path = require("path");
 const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
+const bookRoutes = require("./routes/bookRoutes");
 
 // Express Instance
 const app = express();
@@ -29,6 +30,7 @@ app.use("backend/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/books", bookRoutes);
 
 // Start the Server
 const PORT = process.env.PORT || 5000;
