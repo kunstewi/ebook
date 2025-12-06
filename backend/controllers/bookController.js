@@ -91,6 +91,8 @@ const updateBook = async (req, res) => {
   }
 };
 
+// above apis are working correctly, these below ones aren't
+
 // @desc    Delete a book
 // @route   DELETE /api/books/:id
 // @access  Private
