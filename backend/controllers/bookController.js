@@ -118,6 +118,10 @@ const deleteBook = async (req, res) => {
   }
 };
 
+
+
+// this api is not working properly the coverImage isn't getting uploaded to database
+
 // @desc    Update a book's cover image
 // @route   PUT /api/books/cover/:id
 // @access  Private
