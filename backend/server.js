@@ -14,7 +14,7 @@ const app = express();
 app.use(
   cors({
     origin: "*",
-    method: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
@@ -26,7 +26,7 @@ connectDB();
 app.use(express.json());
 
 // Static folder for uploads
-app.use("backend/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);
