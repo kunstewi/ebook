@@ -1,18 +1,18 @@
-// Import React and routing utilities
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
-// ProtectedRoute component to guard private pages
 const ProtectedRoute = ({ children }) => {
-  // Simulated authentication and loading state
-  const isAuthenticated = true;
-  const loading = false;
+  const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
-  // Show loading state if needed
+  // Show loading state while checking authentication
   if (loading) {
-    // You can add a loading spinner here if you want
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
   }
 
   // Redirect to login if not authenticated
@@ -24,5 +24,4 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-// Export the ProtectedRoute component
 export default ProtectedRoute;
