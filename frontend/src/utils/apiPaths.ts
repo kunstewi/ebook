@@ -1,3 +1,6 @@
+// Reusable ID type — avoids repeating `string | number` everywhere
+type BookId = string | number;
+
 // API endpoint paths
 const API_PATHS = {
     // Auth endpoints
@@ -12,10 +15,10 @@ const API_PATHS = {
     BOOKS: {
         CREATE: "/books",
         GET_ALL: "/books",
-        GET_BY_ID: (id) => `/books/${id}`,
-        UPDATE: (id) => `/books/${id}`,
-        DELETE: (id) => `/books/${id}`,
-        UPDATE_COVER: (id) => `/books/cover/${id}`,
+        GET_BY_ID: (id: BookId) => `/books/${id}`,
+        UPDATE: (id: BookId) => `/books/${id}`,
+        DELETE: (id: BookId) => `/books/${id}`,
+        UPDATE_COVER: (id: BookId) => `/books/cover/${id}`,
     },
 
     // AI endpoints
@@ -28,9 +31,9 @@ const API_PATHS = {
 
     // Export endpoints
     EXPORT: {
-        PDF: (id) => `/export/pdf/${id}`,
-        DOCX: (id) => `/export/docx/${id}`,
-        MARKDOWN: (id) => `/export/markdown/${id}`,
+        PDF: (id: BookId) => `/export/pdf/${id}`,
+        DOCX: (id: BookId) => `/export/docx/${id}`,
+        MARKDOWN: (id: BookId) => `/export/markdown/${id}`,
     },
 };
 

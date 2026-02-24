@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    // Environment Settings
+    "target": "ES2020",
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    // React
+    "jsx": "react-jsx",
+    // Module Interop
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    // Output (Vite builds, TSC only type-checks)
+    "noEmit": true,
+    "sourceMap": true,
+    // Strictness
+    "strict": true,
+    // Performance
+    "skipLibCheck": true
+  },
+  "include": [
+    "src"
+  ]
+}
