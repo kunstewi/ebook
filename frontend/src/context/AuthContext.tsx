@@ -1,11 +1,12 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect, type ReactNode } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import API_PATHS from "../utils/apiPaths";
 import toast from "react-hot-toast";
+import type { User, AuthResult, AuthContextValue } from "../types/index";
 
-const AuthContext = createContext();
+const AuthContext = createContext<AuthContextValue | null>(null);
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextValue => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
@@ -13,79 +14,60 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Initialize auth state from localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
     if (storedToken && storedUser) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      setUser(JSON.parse(storedUser) as User);
     }
     setLoading(false);
   }, []);
 
-  // Register function
-  const register = async (name, email, password) => {
+  const register = async (name: string, email: string, password: string): Promise<AuthResult> => {
     try {
-      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
-        name,
-        email,
-        password,
-      });
-
-      const { token: newToken } = response.data;
-
-      // Store token
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, { name, email, password });
+      const { token: newToken } = response.data as { token: string };
       localStorage.setItem("token", newToken);
       setToken(newToken);
-
-      // Fetch user profile
       await fetchProfile(newToken);
-
       toast.success("Registration successful!");
       return { success: true };
-    } catch (error) {
+    } catch (error: unknown) {
       const message =
-        error.response?.data?.message || "Registration failed. Please try again.";
+        (error as { response?: { data?: { message?: string } } }).response?.data?.message
+        ?? "Registration failed. Please try again.";
       toast.error(message);
       return { success: false, error: message };
     }
   };
 
-  // Login function
-  const login = async (email, password) => {
+  const login = async (email: string, password: string): Promise<AuthResult> => {
     try {
-      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
-        email,
-        password,
-      });
-
-      const { token: newToken, user: userData } = response.data;
-
-      // Store token and user
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, { email, password });
+      const { token: newToken, user: userData } = response.data as { token: string; user: User };
       localStorage.setItem("token", newToken);
       localStorage.setItem("user", JSON.stringify(userData));
       setToken(newToken);
       setUser(userData);
-
       toast.success("Login successful!");
       return { success: true };
-    } catch (error) {
+    } catch (error: unknown) {
       const message =
-        error.response?.data?.message || "Login failed. Please try again.";
+        (error as { response?: { data?: { message?: string } } }).response?.data?.message
+        ?? "Login failed. Please try again.";
       toast.error(message);
       return { success: false, error: message };
     }
   };
 
-  // Logout function
-  const logout = () => {
+  const logout = (): void => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setToken(null);
@@ -93,55 +75,50 @@ export const AuthProvider = ({ children }) => {
     toast.success("Logged out successfully!");
   };
 
-  // Fetch user profile
-  const fetchProfile = async (authToken = token) => {
+  const fetchProfile = async (authToken: string | null = token): Promise<User | null> => {
     try {
       const response = await axiosInstance.get(API_PATHS.AUTH.PROFILE, {
         headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
       });
-
-      const userData = response.data;
+      const userData = response.data as User;
       localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
       return userData;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to fetch profile:", error);
       return null;
     }
   };
 
-  // Update user profile
-  const updateProfile = async (updates) => {
+  const updateProfile = async (
+    updates: Partial<Pick<User, "name" | "avatar">> & { password?: string }
+  ): Promise<AuthResult & { user?: User }> => {
     try {
-      const response = await axiosInstance.put(
-        API_PATHS.AUTH.UPDATE_PROFILE,
-        updates
-      );
-
-      const updatedUser = response.data.user;
+      const response = await axiosInstance.put(API_PATHS.AUTH.UPDATE_PROFILE, updates);
+      const updatedUser = (response.data as { user: User }).user;
       localStorage.setItem("user", JSON.stringify(updatedUser));
       setUser(updatedUser);
-
       toast.success("Profile updated successfully!");
       return { success: true, user: updatedUser };
-    } catch (error) {
+    } catch (error: unknown) {
       const message =
-        error.response?.data?.message || "Failed to update profile.";
+        (error as { response?: { data?: { message?: string } } }).response?.data?.message
+        ?? "Failed to update profile.";
       toast.error(message);
       return { success: false, error: message };
     }
   };
 
-  const value = {
+  const value: AuthContextValue = {
     user,
     token,
     loading,
+    isAuthenticated: !!token,
     register,
     login,
     logout,
     fetchProfile,
     updateProfile,
-    isAuthenticated: !!token,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
