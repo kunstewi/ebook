@@ -6,11 +6,12 @@ import axiosInstance from "../utils/axiosInstance";
 import API_PATHS from "../utils/apiPaths";
 import toast from "react-hot-toast";
 import MDEditor from "@uiw/react-md-editor";
+import type { Book } from "../types/book";
 
 const ViewBookPage = () => {
-  const { bookId } = useParams();
+  const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
-  const [book, setBook] = useState(null);
+  const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
 
@@ -20,7 +21,7 @@ const ViewBookPage = () => {
 
   const fetchBook = async () => {
     try {
-      const response = await axiosInstance.get(API_PATHS.BOOKS.GET_BY_ID(bookId));
+      const response = await axiosInstance.get(API_PATHS.BOOKS.GET_BY_ID(bookId!));
       setBook(response.data);
     } catch (error) {
       toast.error("Failed to fetch book");
@@ -37,6 +38,7 @@ const ViewBookPage = () => {
   };
 
   const handleNextChapter = () => {
+    if (!book) return;
     if (currentChapterIndex < book.chapters.length - 1) {
       setCurrentChapterIndex(currentChapterIndex + 1);
     }
@@ -49,6 +51,8 @@ const ViewBookPage = () => {
       </div>
     );
   }
+
+  if (!book) return null;
 
   if (!book || !book.chapters || book.chapters.length === 0) {
     return (
@@ -111,8 +115,8 @@ const ViewBookPage = () => {
                 <div className="flex items-center space-x-4 text-sm text-gray-600">
                   <span>{book.chapters.length} chapters</span>
                   <span className={`px-3 py-1 rounded-full ${book.status === "published"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-gray-100 text-gray-700"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-gray-100 text-gray-700"
                     }`}>
                     {book.status || "draft"}
                   </span>
@@ -184,8 +188,8 @@ const ViewBookPage = () => {
                 key={index}
                 onClick={() => setCurrentChapterIndex(index)}
                 className={`w-full text-left p-3 rounded-lg transition-colors ${currentChapterIndex === index
-                    ? "bg-primary/10 border-2 border-primary"
-                    : "bg-gray-50 hover:bg-gray-100 border-2 border-transparent"
+                  ? "bg-primary/10 border-2 border-primary"
+                  : "bg-gray-50 hover:bg-gray-100 border-2 border-transparent"
                   }`}
               >
                 <p className="font-medium text-gray-900">

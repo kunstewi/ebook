@@ -81,3 +81,27 @@ before: implicit Promise<any>	after: Promise<AuthResult & { user?: User }>
 - Two catch blocks - Cast to AxiosError<{ message: string }>
 - if (!book) return null - Null guard before JSX accesses book
 - <textarea rows> - "2" → {2}
+
+### ViewBookPage.tsx migration
+- Book type import
+- useParams typed
+```tsx
+// Before   
+const { bookId } = useParams();           // bookId: string | undefined
+
+// After
+const { bookId } = useParams<{ bookId: string }>();  // bookId: string
+```
+- useState(null) → useState<Book | null>(null) TypeScript infers null as the null type with no Book shape — this gives it the full type.
+- bookId! non-null assertion on the API call
+```tsx
+API_PATHS.BOOKS.GET_BY_ID(bookId!)
+```
+- Null guard in handleNextChapter + before JSX
+```tsx
+// handleNextChapter
+if (!book) return;
+
+// before JSX
+if (!book) return null;
+```
