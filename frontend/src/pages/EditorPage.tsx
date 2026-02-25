@@ -16,10 +16,10 @@ import axiosInstance from "../utils/axiosInstance";
 import API_PATHS from "../utils/apiPaths";
 import toast from "react-hot-toast";
 import MDEditor from "@uiw/react-md-editor";
-import type { Book, Chapter } from "../types/book";
+import type { Book, Chapter, BookParams } from "../types/book";
 
 const EditorPage = () => {
-  const { bookId } = useParams<{ bookId: string }>();
+  const { bookId } = useParams<BookParams>();
   const navigate = useNavigate();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);

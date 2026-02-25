@@ -1,5 +1,4 @@
-// Reusable ID type — avoids repeating `string | number` everywhere
-type BookId = string | number;
+import type { BookId } from "../types/book";
 
 // API endpoint paths
 const API_PATHS = {
