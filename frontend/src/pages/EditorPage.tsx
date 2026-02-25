@@ -10,16 +10,18 @@ import {
   Trash2,
   GripVertical,
 } from "lucide-react";
+import type { AxiosError } from "axios";
 import Navbar from "../components/layout/Navbar";
 import axiosInstance from "../utils/axiosInstance";
 import API_PATHS from "../utils/apiPaths";
 import toast from "react-hot-toast";
 import MDEditor from "@uiw/react-md-editor";
+import type { Book, Chapter } from "../types/book";
 
 const EditorPage = () => {
-  const { bookId } = useParams();
+  const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
-  const [book, setBook] = useState(null);
+  const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
@@ -33,7 +35,7 @@ const EditorPage = () => {
 
   const fetchBook = async () => {
     try {
-      const response = await axiosInstance.get(API_PATHS.BOOKS.GET_BY_ID(bookId));
+      const response = await axiosInstance.get(API_PATHS.BOOKS.GET_BY_ID(bookId!));
       setBook(response.data);
       if (!response.data.chapters || response.data.chapters.length === 0) {
         setBook({
@@ -52,7 +54,7 @@ const EditorPage = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await axiosInstance.put(API_PATHS.BOOKS.UPDATE(bookId), book);
+      await axiosInstance.put(API_PATHS.BOOKS.UPDATE(bookId!), book);
       toast.success("Book saved successfully!");
     } catch (error) {
       toast.error("Failed to save book");
@@ -62,6 +64,7 @@ const EditorPage = () => {
   };
 
   const handleAddChapter = () => {
+    if (!book) return;
     const newChapter = {
       title: `Chapter ${book.chapters.length + 1}`,
       description: "",
@@ -74,7 +77,8 @@ const EditorPage = () => {
     setActiveChapterIndex(book.chapters.length);
   };
 
-  const handleDeleteChapter = (index) => {
+  const handleDeleteChapter = (index: number) => {
+    if (!book) return;
     if (book.chapters.length === 1) {
       toast.error("Cannot delete the last chapter");
       return;
@@ -89,7 +93,8 @@ const EditorPage = () => {
     }
   };
 
-  const handleChapterChange = (field, value) => {
+  const handleChapterChange = (field: keyof Chapter, value: string) => {
+    if (!book) return;
     const newChapters = [...book.chapters];
     newChapters[activeChapterIndex] = {
       ...newChapters[activeChapterIndex],
@@ -99,6 +104,7 @@ const EditorPage = () => {
   };
 
   const handleGenerateChapterContent = async () => {
+    if (!book) return;
     const currentChapter = book.chapters[activeChapterIndex];
     if (!currentChapter.title) {
       toast.error("Please add a chapter title first");
@@ -117,13 +123,15 @@ const EditorPage = () => {
       toast.success("Content generated successfully!");
       setShowAIModal(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to generate content");
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(axiosError.response?.data?.message || "Failed to generate content");
     } finally {
       setAiLoading(false);
     }
   };
 
-  const handleImproveContent = async (improvementType) => {
+  const handleImproveContent = async (improvementType: "grammar" | "clarity" | "expand") => {
+    if (!book) return;
     const currentChapter = book.chapters[activeChapterIndex];
     if (!currentChapter.content) {
       toast.error("No content to improve");
@@ -141,20 +149,21 @@ const EditorPage = () => {
       toast.success("Content improved successfully!");
       setShowAIModal(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to improve content");
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(axiosError.response?.data?.message || "Failed to improve content");
     } finally {
       setAiLoading(false);
     }
   };
 
-  const handleExport = async (format) => {
+  const handleExport = async (format: "pdf" | "docx" | "markdown") => {
     try {
       const endpoint =
         format === "pdf"
-          ? API_PATHS.EXPORT.PDF(bookId)
+          ? API_PATHS.EXPORT.PDF(bookId!)
           : format === "docx"
-            ? API_PATHS.EXPORT.DOCX(bookId)
-            : API_PATHS.EXPORT.MARKDOWN(bookId);
+            ? API_PATHS.EXPORT.DOCX(bookId!)
+            : API_PATHS.EXPORT.MARKDOWN(bookId!);
 
       const response = await axiosInstance.get(endpoint, {
         responseType: "blob",
@@ -165,7 +174,7 @@ const EditorPage = () => {
       link.href = url;
       link.setAttribute(
         "download",
-        `${book.title.replace(/[^a-z0-9]/gi, "_")}.${format === "markdown" ? "md" : format}`
+        `${book!.title.replace(/[^a-z0-9]/gi, "_")}.${format === "markdown" ? "md" : format}`
       );
       document.body.appendChild(link);
       link.click();
@@ -178,8 +187,8 @@ const EditorPage = () => {
     }
   };
 
-  const handleCoverUpload = async (e) => {
-    const file = e.target.files[0];
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     const formData = new FormData();
@@ -187,7 +196,7 @@ const EditorPage = () => {
 
     try {
       const response = await axiosInstance.put(
-        API_PATHS.BOOKS.UPDATE_COVER(bookId),
+        API_PATHS.BOOKS.UPDATE_COVER(bookId!),
         formData,
         {
           headers: {
@@ -209,6 +218,8 @@ const EditorPage = () => {
       </div>
     );
   }
+
+  if (!book) return null;
 
   const currentChapter = book.chapters[activeChapterIndex];
 
@@ -278,8 +289,8 @@ const EditorPage = () => {
                     key={index}
                     onClick={() => setActiveChapterIndex(index)}
                     className={`p-3 rounded-lg cursor-pointer transition-colors ${activeChapterIndex === index
-                        ? "bg-primary/10 border-2 border-primary"
-                        : "bg-gray-50 hover:bg-gray-100 border-2 border-transparent"
+                      ? "bg-primary/10 border-2 border-primary"
+                      : "bg-gray-50 hover:bg-gray-100 border-2 border-transparent"
                       }`}
                   >
                     <div className="flex items-start justify-between">
@@ -366,7 +377,7 @@ const EditorPage = () => {
                     handleChapterChange("description", e.target.value)
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  rows="2"
+                  rows={2}
                   placeholder="Brief description of this chapter"
                 />
               </div>

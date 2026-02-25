@@ -64,3 +64,20 @@ before: implicit Promise<any>	after: Promise<AuthResult & { user?: User }>
 - const value = { user, token, loading, ... };
 + const value: AuthContextValue = { user, token, loading, ... };
 ```
+
+### EditorPage.tsx migration
+
+- Imports - dded AxiosError, Book, Chapter type imports.
+- useParams - useParams<{ bookId: string }>() — eliminates undefined from type.
+- useState(null) - → useState<Book | null>(null)
+- handleAddChapter - Added if (!book) return guard
+- handleDeleteChapter(index) - Typed number, added if (!book) return
+- handleChapterChange(field, value) - yped keyof Chapter, string, added if (!book) return
+- handleGenerateChapterContent - Added if (!book) return
+- handleImproveContent - Added if (!book) return, typed param as union literal
+- handleExport(format) - yped param as "pdf" | "docx" | "markdown"
+- handleCoverUpload(e) - React.ChangeEvent<HTMLInputElement>, files?.[0] optional chain
+- ll API_PATHS calls - bookId! non-null assertion (safe — route always provides it)
+- Two catch blocks - Cast to AxiosError<{ message: string }>
+- if (!book) return null - Null guard before JSX accesses book
+- <textarea rows> - "2" → {2}

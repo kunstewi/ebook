@@ -1,3 +1,9 @@
+export interface Chapter {
+    title: string;
+    description: string;
+    content: string;
+}
+
 export interface Book {
     _id: string;
     title: string;
@@ -5,5 +11,5 @@ export interface Book {
     author: string;
     coverImage?: string;
     status?: string;
-    chapters?: unknown[];
+    chapters: Chapter[];
 }
