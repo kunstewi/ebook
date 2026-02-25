@@ -2,7 +2,22 @@ import React from "react";
 import { BookOpen, Eye, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const BookCard = ({ book, onDelete }) => {
+interface Book {
+  _id: string;
+  title: string;
+  subtitle?: string;
+  author: string;
+  coverImage?: string;
+  status?: string;
+  chapters?: unknown[];
+}
+
+interface BookCardProps {
+  book: Book;
+  onDelete?: (id: string) => void;
+}
+
+const BookCard = ({ book, onDelete }: BookCardProps) => {
   const navigate = useNavigate();
 
   const handleView = () => {
@@ -48,8 +63,8 @@ const BookCard = ({ book, onDelete }) => {
         <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
           <span>{book.chapters?.length || 0} chapters</span>
           <span className={`px-2 py-1 rounded-full ${book.status === "published"
-              ? "bg-green-100 text-green-700"
-              : "bg-gray-100 text-gray-700"
+            ? "bg-green-100 text-green-700"
+            : "bg-gray-100 text-gray-700"
             }`}>
             {book.status || "draft"}
           </span>
