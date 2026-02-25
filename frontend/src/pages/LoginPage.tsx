@@ -13,7 +13,7 @@ const LoginPage = () => {
 
   const from = location.state?.from?.pathname || "/dashboard";
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
