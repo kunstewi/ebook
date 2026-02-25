@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, BookOpen, Loader } from "lucide-react";
+import type { AxiosError } from "axios";
 import Navbar from "../components/layout/Navbar";
 import BookCard from "../components/cards/BookCard";
 import axiosInstance from "../utils/axiosInstance";
 import API_PATHS from "../utils/apiPaths";
 import toast from "react-hot-toast";
+import type { Book } from "../types/book";
 
 const DashboardPage = () => {
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newBook, setNewBook] = useState({
@@ -33,7 +35,7 @@ const DashboardPage = () => {
     }
   };
 
-  const handleCreateBook = async (e) => {
+  const handleCreateBook = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!newBook.title || !newBook.author) {
@@ -49,11 +51,12 @@ const DashboardPage = () => {
       setNewBook({ title: "", subtitle: "", author: "" });
       navigate(`/editor/${response.data._id}`);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to create book");
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(axiosError.response?.data?.message || "Failed to create book");
     }
   };
 
-  const handleDeleteBook = async (bookId) => {
+  const handleDeleteBook = async (bookId: string) => {
     if (!window.confirm("Are you sure you want to delete this book?")) {
       return;
     }

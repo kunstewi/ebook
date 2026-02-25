@@ -1,16 +1,7 @@
 import React from "react";
 import { BookOpen, Eye, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-interface Book {
-  _id: string;
-  title: string;
-  subtitle?: string;
-  author: string;
-  coverImage?: string;
-  status?: string;
-  chapters?: unknown[];
-}
+import type { Book } from "../../types/book";
 
 interface BookCardProps {
   book: Book;
