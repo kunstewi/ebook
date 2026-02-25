@@ -17,7 +17,7 @@ const ProfilePage = () => {
     confirmPassword: "",
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (formData.password && formData.password !== formData.confirmPassword) {
@@ -32,7 +32,7 @@ const ProfilePage = () => {
 
     setLoading(true);
 
-    const updates = {
+    const updates: { name: string; avatar: string; password?: string } = {
       name: formData.name,
       avatar: formData.avatar,
     };
@@ -187,7 +187,7 @@ const ProfilePage = () => {
                           }
                           className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                           placeholder="••••••••"
-                          minLength="6"
+                          minLength={6}
                         />
                       </div>
                     </div>
@@ -211,7 +211,7 @@ const ProfilePage = () => {
                           }
                           className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                           placeholder="••••••••"
-                          minLength="6"
+                          minLength={6}
                         />
                       </div>
                     </div>
