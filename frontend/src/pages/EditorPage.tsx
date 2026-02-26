@@ -9,6 +9,8 @@ import {
   Image as ImageIcon,
   Trash2,
   GripVertical,
+  Globe,
+  Lock,
 } from "lucide-react";
 import type { AxiosError } from "axios";
 import Navbar from "../components/layout/Navbar";
@@ -58,6 +60,22 @@ const EditorPage = () => {
       toast.success("Book saved successfully!");
     } catch (error) {
       toast.error("Failed to save book");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleTogglePublish = async () => {
+    if (!book) return;
+    setSaving(true);
+    const newStatus = book.status === "published" ? "draft" : "published";
+    try {
+      const updatedBook = { ...book, status: newStatus };
+      const response = await axiosInstance.put(API_PATHS.BOOKS.UPDATE(bookId!), updatedBook);
+      setBook(response.data);
+      toast.success(newStatus === "published" ? "Book published successfully!" : "Book unpublished and moved to drafts.");
+    } catch (error) {
+      toast.error(`Failed to ${newStatus === "published" ? "publish" : "unpublish"} book`);
     } finally {
       setSaving(false);
     }
@@ -197,12 +215,7 @@ const EditorPage = () => {
     try {
       const response = await axiosInstance.put(
         API_PATHS.BOOKS.UPDATE_COVER(bookId!),
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        formData
       );
       setBook(response.data);
       toast.success("Cover image updated!");
@@ -257,6 +270,26 @@ const EditorPage = () => {
               >
                 <Download className="h-4 w-4" />
                 <span>Export</span>
+              </button>
+              <button
+                onClick={handleTogglePublish}
+                disabled={saving}
+                className={`flex items-center space-x-2 px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 ${book.status === "published"
+                    ? "bg-gray-600 hover:bg-gray-700"
+                    : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+              >
+                {book.status === "published" ? (
+                  <>
+                    <Lock className="h-4 w-4" />
+                    <span>Unpublish</span>
+                  </>
+                ) : (
+                  <>
+                    <Globe className="h-4 w-4" />
+                    <span>Publish</span>
+                  </>
+                )}
               </button>
               <button
                 onClick={handleSave}
