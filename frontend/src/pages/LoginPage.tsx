@@ -26,19 +26,19 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-center justify-center px-4">
-      <div className="max-w-md w-full">
+    <div className="h-dvh overflow-hidden bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 sm:p-10 flex flex-col">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <BookOpen className="h-16 w-16 text-primary" />
+            <BookOpen className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-gray-600 mt-2">Sign in to continue to eBook Creator</p>
+          <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
+          <p className="text-gray-600 mt-2 text-sm">Sign in to continue to eBook Creator</p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="w-full">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div>
@@ -104,8 +104,8 @@ const LoginPage = () => {
         </div>
 
         {/* Back to Home */}
-        <div className="mt-4 text-center">
-          <Link to="/" className="text-sm text-gray-600 hover:text-primary">
+        <div className="mt-8 text-center border-t border-gray-100 pt-6">
+          <Link to="/" className="text-sm text-gray-500 hover:text-primary transition-colors inline-block">
             ← Back to Home
           </Link>
         </div>
