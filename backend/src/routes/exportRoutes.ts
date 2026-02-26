@@ -1,11 +1,11 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const {
+import {
     exportToPDF,
     exportToDocx,
     exportToMarkdown,
-} = require("../controllers/exportController");
-const { protect } = require("../middlewares/authMiddleware");
+} from "../controllers/exportController";
+import { protect } from "../middlewares/authMiddleware";
 
 // Apply protect middleware to all routes in this file
 router.use(protect);
@@ -15,4 +15,4 @@ router.get("/pdf/:id", exportToPDF);
 router.get("/docx/:id", exportToDocx);
 router.get("/markdown/:id", exportToMarkdown);
 
-module.exports = router;
+export default router;

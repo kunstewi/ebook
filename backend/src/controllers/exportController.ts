@@ -1,12 +1,13 @@
-const Book = require("../models/Book");
-const PDFDocument = require("pdfkit");
-const { Document, Packer, Paragraph, TextRun, HeadingLevel } = require("docx");
-const MarkdownIt = require("markdown-it");
+import Book from "../models/Book";
+import PDFDocument from "pdfkit";
+import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
+import MarkdownIt from "markdown-it";
+import { Request, Response } from "express";
 
 // @desc    Export book to PDF
 // @route   GET /api/export/pdf/:id
 // @access  Private
-const exportToPDF = async (req, res) => {
+export const exportToPDF = async (req: Request, res: Response): Promise<any> => {
     try {
         const book = await Book.findById(req.params.id);
 
@@ -14,7 +15,7 @@ const exportToPDF = async (req, res) => {
             return res.status(404).json({ message: "Book not found" });
         }
 
-        if (book.userId.toString() !== req.user._id.toString()) {
+        if (book.userId.toString() !== req.user?._id?.toString()) {
             return res
                 .status(401)
                 .json({ message: "Not authorized to export this book" });
@@ -107,7 +108,7 @@ const exportToPDF = async (req, res) => {
 // @desc    Export book to DOCX
 // @route   GET /api/export/docx/:id
 // @access  Private
-const exportToDocx = async (req, res) => {
+export const exportToDocx = async (req: Request, res: Response): Promise<any> => {
     try {
         const book = await Book.findById(req.params.id);
 
@@ -115,7 +116,7 @@ const exportToDocx = async (req, res) => {
             return res.status(404).json({ message: "Book not found" });
         }
 
-        if (book.userId.toString() !== req.user._id.toString()) {
+        if (book.userId.toString() !== req.user?._id?.toString()) {
             return res
                 .status(401)
                 .json({ message: "Not authorized to export this book" });
@@ -151,7 +152,7 @@ const exportToDocx = async (req, res) => {
         );
 
         // Add chapters
-        const chapterParagraphs = [];
+        const chapterParagraphs: Paragraph[] = [];
         book.chapters.forEach((chapter, index) => {
             // Chapter title
             chapterParagraphs.push(
@@ -228,7 +229,7 @@ const exportToDocx = async (req, res) => {
 // @desc    Export book to Markdown
 // @route   GET /api/export/markdown/:id
 // @access  Private
-const exportToMarkdown = async (req, res) => {
+export const exportToMarkdown = async (req: Request, res: Response): Promise<any> => {
     try {
         const book = await Book.findById(req.params.id);
 
@@ -236,7 +237,7 @@ const exportToMarkdown = async (req, res) => {
             return res.status(404).json({ message: "Book not found" });
         }
 
-        if (book.userId.toString() !== req.user._id.toString()) {
+        if (book.userId.toString() !== req.user?._id?.toString()) {
             return res
                 .status(401)
                 .json({ message: "Not authorized to export this book" });
@@ -281,8 +282,4 @@ const exportToMarkdown = async (req, res) => {
     }
 };
 
-module.exports = {
-    exportToPDF,
-    exportToDocx,
-    exportToMarkdown,
-};
+// Export handled by inline export const

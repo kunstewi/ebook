@@ -1,16 +1,16 @@
 // Import the Express framework
-const express = require("express");
+import express from "express";
 
 // Import user authentication and profile controller functions
-const {
+import {
   registerUser,
   loginUser,
   getProfile,
   updateUserProfile,
-} = require("../controllers/authController");
+} from "../controllers/authController";
 
 // Import the 'protect' middleware for route protection
-const { protect } = require("../middlewares/authMiddleware");
+import { protect } from "../middlewares/authMiddleware";
 
 const router = express.Router(); // Initialize the Express router
 
@@ -22,4 +22,4 @@ router.post("/login", loginUser);
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateUserProfile);
 
-module.exports = router; 
+export default router; 

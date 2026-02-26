@@ -1,12 +1,12 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const {
+import {
     generateChapterContent,
     generateBookOutline,
     improveContent,
     generateTitle,
-} = require("../controllers/aiController");
-const { protect } = require("../middlewares/authMiddleware");
+} from "../controllers/aiController";
+import { protect } from "../middlewares/authMiddleware";
 
 // Apply protect middleware to all routes in this file
 router.use(protect);
@@ -17,4 +17,4 @@ router.post("/generate-outline", generateBookOutline);
 router.post("/improve-content", improveContent);
 router.post("/generate-title", generateTitle);
 
-module.exports = router;
+export default router;

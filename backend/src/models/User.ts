@@ -1,8 +1,9 @@
-// models/User.js
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+// models/User.ts
+import mongoose, { Schema } from "mongoose";
+import bcrypt from "bcrypt";
+import { IUser } from "../types";
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema<IUser>(
   {
     name: {
       type: String,
@@ -40,8 +41,8 @@ userSchema.pre("save", async function (next) {
 });
 
 // Method to compare password
-userSchema.methods.matchPassword = async function (enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model("User", userSchema);
+export default mongoose.model<IUser>("User", userSchema);

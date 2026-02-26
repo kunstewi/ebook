@@ -1,16 +1,17 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const connectDB = require("./config/db");
+import dotenv from "dotenv";
+dotenv.config();
+import express, { Application } from "express";
+import cors from "cors";
+import path from "path";
+import connectDB from "./config/db";
 
-const authRoutes = require("./routes/authRoutes");
-const bookRoutes = require("./routes/bookRoutes");
-const aiRoutes = require("./routes/aiRoutes");
-const exportRoutes = require("./routes/exportRoutes");
+import authRoutes from "./routes/authRoutes";
+import bookRoutes from "./routes/bookRoutes";
+import aiRoutes from "./routes/aiRoutes";
+import exportRoutes from "./routes/exportRoutes";
 
 // Express Instance
-const app = express();
+const app: Application = express();
 
 // MIddleware to handle CORS
 app.use(
@@ -27,8 +28,8 @@ connectDB();
 // Middleware to Parse JSON
 app.use(express.json());
 
-// Static folder for uploads
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// Static folder for "uploads" directory
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);

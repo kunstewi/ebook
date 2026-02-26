@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
+import mongoose, { Schema } from "mongoose";
+import { IBook, IChapter } from "../types";
 
-const chapterSchema = new mongoose.Schema({
+const chapterSchema = new Schema<IChapter>({
   title: {
     type: String,
     required: true,
@@ -15,10 +16,10 @@ const chapterSchema = new mongoose.Schema({
   },
 });
 
-const bookSchema = new mongoose.Schema(
+const bookSchema = new Schema<IBook>(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
     },
@@ -48,4 +49,4 @@ const bookSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Book", bookSchema);
+export default mongoose.model<IBook>("Book", bookSchema);
