@@ -97,10 +97,10 @@ const ViewBookPage = () => {
                 <img
                   src={`http://localhost:8000${book.coverImage}`}
                   alt={book.title}
-                  className="w-32 h-48 object-cover rounded-lg shadow-md"
+                  className="w-32 md:w-40 aspect-[3/4] object-cover rounded-lg shadow-md"
                 />
               ) : (
-                <div className="w-32 h-48 bg-gradient-to-br from-primary/20 to-orange-200 rounded-lg shadow-md flex items-center justify-center">
+                <div className="w-32 md:w-40 aspect-[3/4] bg-gradient-to-br from-primary/20 to-orange-200 rounded-lg shadow-md flex items-center justify-center">
                   <BookOpen className="h-12 w-12 text-primary/40" />
                 </div>
               )}

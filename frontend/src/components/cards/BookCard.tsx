@@ -28,7 +28,7 @@ const BookCard = ({ book, onDelete }: BookCardProps) => {
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
       {/* Book Cover */}
-      <div className="h-48 bg-gradient-to-br from-primary/20 to-orange-200 flex items-center justify-center relative overflow-hidden">
+      <div className="aspect-[3/4] bg-gradient-to-br from-primary/20 to-orange-200 flex items-center justify-center relative overflow-hidden">
         {book.coverImage ? (
           <img
             src={`http://localhost:8000${book.coverImage}`}

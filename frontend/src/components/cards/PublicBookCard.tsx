@@ -37,7 +37,7 @@ export const PublicBookCard = ({ book, className }: PublicBookCardProps) => {
             onClick={handleReadClick}
         >
             {/* Aspect ratio container for book cover */}
-            <div className="relative aspect-[4/3] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
+            <div className="relative aspect-[3/4] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
                 {book.coverImage ? (
                     <img
                         src={`http://localhost:8000${book.coverImage}`}

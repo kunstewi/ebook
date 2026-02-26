@@ -275,8 +275,8 @@ const EditorPage = () => {
                 onClick={handleTogglePublish}
                 disabled={saving}
                 className={`flex items-center space-x-2 px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 ${book.status === "published"
-                    ? "bg-gray-600 hover:bg-gray-700"
-                    : "bg-blue-600 hover:bg-blue-700"
+                  ? "bg-gray-600 hover:bg-gray-700"
+                  : "bg-blue-600 hover:bg-blue-700"
                   }`}
               >
                 {book.status === "published" ? (
@@ -358,15 +358,15 @@ const EditorPage = () => {
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">
                   Book Cover
                 </h3>
-                <div className="relative">
+                <div className="relative aspect-[3/4] w-full">
                   {book.coverImage ? (
                     <img
                       src={`http://localhost:8000${book.coverImage}`}
                       alt="Book cover"
-                      className="w-full h-48 object-cover rounded-lg"
+                      className="w-full h-full object-cover rounded-lg"
                     />
                   ) : (
-                    <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
                       <ImageIcon className="h-12 w-12 text-gray-400" />
                     </div>
                   )}
