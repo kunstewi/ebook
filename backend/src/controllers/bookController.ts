@@ -42,6 +42,20 @@ export const getBooks = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+// @desc    Get all public published books
+// @route   GET /api/books/public
+// @access  Public
+export const getPublicBooks = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const books = await Book.find({ status: "published" }).sort({
+      createdAt: -1,
+    });
+    res.status(200).json(books);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // @desc    Get a single book by ID
 // @route   GET /api/books/:id
 // @access  Private

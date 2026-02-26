@@ -7,9 +7,13 @@ import {
   updateBook,
   deleteBook,
   updateBookCover,
+  getPublicBooks,
 } from "../controllers/bookController";
 import { protect } from "../middlewares/authMiddleware";
 import upload from "../middlewares/uploadMiddleware";
+
+// Public routes
+router.route("/public").get(getPublicBooks);
 
 // Apply protect middleware to all routes in this file
 router.use(protect);
