@@ -217,7 +217,7 @@ const EditorPage = () => {
         API_PATHS.BOOKS.UPDATE_COVER(bookId!),
         formData
       );
-      setBook(response.data);
+      setBook((prev) => prev ? { ...prev, coverImage: response.data.coverImage } : response.data);
       toast.success("Cover image updated!");
     } catch (error) {
       toast.error("Failed to upload cover image");

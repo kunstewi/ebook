@@ -3,9 +3,6 @@ import axios from "axios";
 // Create axios instance with base configuration
 const axiosInstance = axios.create({
     baseURL: "http://localhost:8000/api",
-    headers: {
-        "Content-Type": "application/json",
-    },
 });
 
 // Request interceptor to add auth token
