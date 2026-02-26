@@ -14,6 +14,7 @@ const API_PATHS = {
     BOOKS: {
         CREATE: "/books",
         GET_ALL: "/books",
+        GET_PUBLIC: "/books/public",
         GET_BY_ID: (id: BookId) => `/books/${id}`,
         UPDATE: (id: BookId) => `/books/${id}`,
         DELETE: (id: BookId) => `/books/${id}`,
