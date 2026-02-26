@@ -1,15 +1,16 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+import jwt from "jsonwebtoken";
+import User from "../models/User";
+import { Request, Response } from "express";
 
 // Helper: Generate JWT
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+const generateToken = (id: any) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
 };
 
 // @desc Register new user
 // @route POST /api/auth/register
 // @access Public
-exports.registerUser = async (req, res) => {
+export const registerUser = async (req: Request, res: Response): Promise<any> => {
   const { name, email, password } = req.body;
 
   try {
@@ -43,7 +44,7 @@ exports.registerUser = async (req, res) => {
 // @desc Login user
 // @route POST /api/auth/login
 // @access Public
-exports.loginUser = async (req, res) => {
+export const loginUser = async (req: Request, res: Response): Promise<any> => {
   const { email, password } = req.body;
 
   try {
@@ -85,9 +86,9 @@ exports.loginUser = async (req, res) => {
 // @desc Get current logged-in user
 // @route GET /api/auth/profile
 // @access Private
-exports.getProfile = async (req, res) => {
+export const getProfile = async (req: Request, res: Response): Promise<any> => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user?._id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -109,9 +110,9 @@ exports.getProfile = async (req, res) => {
 // @desc Update user profile
 // @route PUT /api/auth/profile
 // @access Private
-exports.updateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req: Request, res: Response): Promise<any> => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user?._id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

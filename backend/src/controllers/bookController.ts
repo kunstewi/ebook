@@ -1,9 +1,10 @@
-const Book = require("../models/Book");
+import Book from "../models/Book";
+import { Request, Response } from "express";
 
 // @desc      Create a new book
 // @route     POST /api/books
 // @access    Private
-const createBook = async (req, res) => {
+export const createBook = async (req: Request, res: Response): Promise<any> => {
   try {
     const { title, author, subtitle, chapters } = req.body;
 
@@ -14,7 +15,7 @@ const createBook = async (req, res) => {
     }
 
     const book = await Book.create({
-      userId: req.user._id,
+      userId: req.user?._id,
       title,
       author,
       subtitle,
@@ -30,9 +31,9 @@ const createBook = async (req, res) => {
 // @desc    Get all books for a user
 // @route   GET /api/books
 // @access  Private
-const getBooks = async (req, res) => {
+export const getBooks = async (req: Request, res: Response): Promise<any> => {
   try {
-    const books = await Book.find({ userId: req.user._id }).sort({
+    const books = await Book.find({ userId: req.user?._id }).sort({
       createdAt: -1,
     });
     res.status(200).json(books);
@@ -44,7 +45,7 @@ const getBooks = async (req, res) => {
 // @desc    Get a single book by ID
 // @route   GET /api/books/:id
 // @access  Private
-const getBookById = async (req, res) => {
+export const getBookById = async (req: Request, res: Response): Promise<any> => {
   try {
     const book = await Book.findById(req.params.id);
 
@@ -52,7 +53,7 @@ const getBookById = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
 
-    if (book.userId.toString() !== req.user._id.toString()) {
+    if (book.userId.toString() !== req.user?._id?.toString()) {
       return res
         .status(401)
         .json({ message: "Not authorized to view this book" });
@@ -67,7 +68,7 @@ const getBookById = async (req, res) => {
 // @desc    Update a book
 // @route   PUT /api/books/:id
 // @access  Private
-const updateBook = async (req, res) => {
+export const updateBook = async (req: Request, res: Response): Promise<any> => {
   try {
     const book = await Book.findById(req.params.id);
 
@@ -75,7 +76,7 @@ const updateBook = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
 
-    if (book.userId.toString() !== req.user._id.toString()) {
+    if (book.userId.toString() !== req.user?._id?.toString()) {
       return res
         .status(401)
         .json({ message: "Not authorized to update this book" });
@@ -96,7 +97,7 @@ const updateBook = async (req, res) => {
 // @desc    Delete a book
 // @route   DELETE /api/books/:id
 // @access  Private
-const deleteBook = async (req, res) => {
+export const deleteBook = async (req: Request, res: Response): Promise<any> => {
   try {
     const book = await Book.findById(req.params.id);
 
@@ -104,7 +105,7 @@ const deleteBook = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
 
-    if (book.userId.toString() !== req.user._id.toString()) {
+    if (book.userId.toString() !== req.user?._id?.toString()) {
       return res
         .status(401)
         .json({ message: "Not authorized to delete this book" });
@@ -125,7 +126,7 @@ const deleteBook = async (req, res) => {
 // @desc    Update a book's cover image
 // @route   PUT /api/books/cover/:id
 // @access  Private
-const updateBookCover = async (req, res) => {
+export const updateBookCover = async (req: Request, res: Response): Promise<any> => {
   try {
     const book = await Book.findById(req.params.id);
 
@@ -133,7 +134,7 @@ const updateBookCover = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
 
-    if (book.userId.toString() !== req.user._id.toString()) {
+    if (book.userId.toString() !== req.user?._id?.toString()) {
       return res
         .status(401)
         .json({ message: "Not authorized to update this book" });
@@ -154,11 +155,4 @@ const updateBookCover = async (req, res) => {
 };
 
 
-module.exports = {
-  createBook,
-  getBooks,
-  getBookById,
-  updateBook,
-  deleteBook,
-  updateBookCover,
-};
+// Export handled by inline export const

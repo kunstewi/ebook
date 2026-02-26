@@ -1,12 +1,13 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Request, Response } from "express";
 
 // Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 // @desc    Generate chapter content using AI
 // @route   POST /api/ai/generate-chapter
 // @access  Private
-const generateChapterContent = async (req, res) => {
+export const generateChapterContent = async (req: Request, res: Response): Promise<any> => {
     try {
         const { title, description, bookContext } = req.body;
 
@@ -38,7 +39,7 @@ Please write comprehensive chapter content (approximately 500-1000 words) that i
             success: true,
             content,
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("AI Generation Error:", error);
         res.status(500).json({
             message: "Failed to generate content",
@@ -50,7 +51,7 @@ Please write comprehensive chapter content (approximately 500-1000 words) that i
 // @desc    Generate book outline using AI
 // @route   POST /api/ai/generate-outline
 // @access  Private
-const generateBookOutline = async (req, res) => {
+export const generateBookOutline = async (req: Request, res: Response): Promise<any> => {
     try {
         const { topic, genre, targetAudience, numberOfChapters } = req.body;
 
@@ -113,7 +114,7 @@ Format the response as a JSON object with the following structure:
                 message: "Generated outline (manual parsing may be required)",
             });
         }
-    } catch (error) {
+    } catch (error: any) {
         console.error("AI Generation Error:", error);
         res.status(500).json({
             message: "Failed to generate outline",
@@ -125,7 +126,7 @@ Format the response as a JSON object with the following structure:
 // @desc    Improve existing content using AI
 // @route   POST /api/ai/improve-content
 // @access  Private
-const improveContent = async (req, res) => {
+export const improveContent = async (req: Request, res: Response): Promise<any> => {
     try {
         const { content, improvementType } = req.body;
 
@@ -168,7 +169,7 @@ const improveContent = async (req, res) => {
             success: true,
             improvedContent,
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("AI Improvement Error:", error);
         res.status(500).json({
             message: "Failed to improve content",
@@ -180,7 +181,7 @@ const improveContent = async (req, res) => {
 // @desc    Generate creative book titles using AI
 // @route   POST /api/ai/generate-title
 // @access  Private
-const generateTitle = async (req, res) => {
+export const generateTitle = async (req: Request, res: Response): Promise<any> => {
     try {
         const { topic, genre, keywords } = req.body;
 
@@ -237,7 +238,7 @@ Format the response as a JSON array of objects with 'title' and 'subtitle' field
                 message: "Generated titles (manual parsing may be required)",
             });
         }
-    } catch (error) {
+    } catch (error: any) {
         console.error("AI Generation Error:", error);
         res.status(500).json({
             message: "Failed to generate titles",
@@ -246,9 +247,4 @@ Format the response as a JSON array of objects with 'title' and 'subtitle' field
     }
 };
 
-module.exports = {
-    generateChapterContent,
-    generateBookOutline,
-    improveContent,
-    generateTitle,
-};
+// Export handled by inline export const

@@ -1,6 +1,7 @@
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+import multer, { FileFilterCallback } from "multer";
+import path from "path";
+import fs from "fs";
+import { Request } from "express";
 
 // Create uploads directory if it doesn't exist
 const uploadDir = "uploads";
@@ -10,10 +11,10 @@ if (!fs.existsSync(uploadDir)) {
 
 // Set up storage engine
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) {
     cb(null, uploadDir);
   },
-  filename: function (req, file, cb) {
+  filename: function (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) {
     cb(
       null,
       `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
@@ -22,7 +23,7 @@ const storage = multer.diskStorage({
 });
 
 // Check file type
-function checkFileType(file, cb) {
+export function checkFileType(file: Express.Multer.File, cb: FileFilterCallback) {
   const filetypes = /jpeg|jpg|png|gif/;
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = filetypes.test(file.mimetype);
@@ -30,7 +31,7 @@ function checkFileType(file, cb) {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb("Error: Images Only!");
+    cb(new Error("Error: Images Only!") as any);
   }
 }
 
@@ -38,9 +39,9 @@ function checkFileType(file, cb) {
 const upload = multer({
   storage: storage,
   limits: { fileSize: 2 * 1024 * 1024 }, // 2MB limit
-  fileFilter: function (req, file, cb) {
+  fileFilter: function (req: Request, file: Express.Multer.File, cb: FileFilterCallback) {
     checkFileType(file, cb);
   },
 }).single("coverImage"); // Field name for the uploaded file
 
-module.exports = upload;
+export default upload;
