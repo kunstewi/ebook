@@ -2,8 +2,13 @@ import mongoose from "mongoose";
 
 const connectDB = async (): Promise<void> => {
   try {
-    await mongoose.connect(process.env.MONGO_URI as string, {});
-    console.log("MongoDB Connected");
+    const isTest = process.env.NODE_ENV === 'test';
+    const uri = isTest
+      ? 'mongodb://localhost:27017/ebook-db-test'
+      : (process.env.MONGO_URI as string);
+
+    await mongoose.connect(uri, {});
+    console.log(`MongoDB Connected ${isTest ? '(Test DB)' : ''}`);
   } catch (err) {
     console.error("Error Connecting to MongoDB", err);
     process.exit(1);
