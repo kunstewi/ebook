@@ -112,7 +112,6 @@ if (!book) return null;
 
 ## Backend API Documentation
 
-# eBook Backend API Documentation
 
 ## Base URL
 ```
