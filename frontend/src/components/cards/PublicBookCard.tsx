@@ -3,6 +3,7 @@ import { BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Book } from "../../types/book";
 import { cn } from "../../utils/cn";
+import { toBackendAssetUrl } from "../../utils/runtimeConfig";
 
 interface PublicBookCardProps {
     book: Book;
@@ -28,6 +29,7 @@ export const PublicBookCard = ({ book, className }: PublicBookCardProps) => {
 
     return (
         <div
+            data-testid={`public-book-card-${book._id}`}
             className={cn(
                 "group flex flex-col bg-white rounded-xl overflow-hidden cursor-pointer",
                 "border border-gray-100 shadow-sm hover:shadow-md",
@@ -40,7 +42,7 @@ export const PublicBookCard = ({ book, className }: PublicBookCardProps) => {
             <div className="relative aspect-[3/4] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
                 {book.coverImage ? (
                     <img
-                        src={`http://localhost:8000${book.coverImage}`}
+                        src={toBackendAssetUrl(book.coverImage)}
                         alt={book.title}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="lazy"
@@ -62,7 +64,7 @@ export const PublicBookCard = ({ book, className }: PublicBookCardProps) => {
             {/* Book details */}
             <div className="p-4 flex flex-col flex-1">
                 <h3 className="font-semibold text-gray-900 text-base leading-tight line-clamp-2 mb-1 group-hover:text-primary transition-colors text-balance">
-                    {book.title}
+                    <span data-testid={`public-book-title-${book._id}`}>{book.title}</span>
                 </h3>
 
                 <p className="text-sm text-gray-500 mb-2 truncate text-pretty">

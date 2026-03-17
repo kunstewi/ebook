@@ -83,6 +83,7 @@ const DashboardPage = () => {
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
+            data-testid="dashboard-new-book-button"
             className="flex items-center space-x-2 px-4 py-2 bg-primary hover:bg-orange-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all"
           >
             <Plus className="h-5 w-5" />
@@ -106,6 +107,7 @@ const DashboardPage = () => {
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
+              data-testid="dashboard-empty-create-button"
               className="inline-flex items-center space-x-2 px-6 py-3 bg-primary hover:bg-orange-600 text-white rounded-lg shadow-md hover:shadow-lg transition-all"
             >
               <Plus className="h-5 w-5" />
@@ -124,7 +126,7 @@ const DashboardPage = () => {
       {/* Create Book Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+          <div data-testid="create-book-modal" className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Create New Book
             </h2>
@@ -135,6 +137,7 @@ const DashboardPage = () => {
                 </label>
                 <input
                   type="text"
+                  data-testid="create-book-title-input"
                   required
                   value={newBook.title}
                   onChange={(e) =>
@@ -150,6 +153,7 @@ const DashboardPage = () => {
                 </label>
                 <input
                   type="text"
+                  data-testid="create-book-subtitle-input"
                   value={newBook.subtitle}
                   onChange={(e) =>
                     setNewBook({ ...newBook, subtitle: e.target.value })
@@ -164,6 +168,7 @@ const DashboardPage = () => {
                 </label>
                 <input
                   type="text"
+                  data-testid="create-book-author-input"
                   required
                   value={newBook.author}
                   onChange={(e) =>
@@ -177,12 +182,14 @@ const DashboardPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
+                  data-testid="create-book-cancel-button"
                   className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
+                  data-testid="create-book-submit-button"
                   className="flex-1 px-4 py-2 bg-primary hover:bg-orange-600 text-white rounded-md transition-colors"
                 >
                   Create Book

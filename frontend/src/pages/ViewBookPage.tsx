@@ -7,6 +7,7 @@ import API_PATHS from "../utils/apiPaths";
 import toast from "react-hot-toast";
 import MDEditor from "@uiw/react-md-editor";
 import type { Book, BookParams } from "../types/book";
+import { toBackendAssetUrl } from "../utils/runtimeConfig";
 
 const ViewBookPage = () => {
   const { bookId } = useParams<BookParams>();
@@ -95,8 +96,9 @@ const ViewBookPage = () => {
             <div className="flex items-start space-x-6">
               {book.coverImage ? (
                 <img
-                  src={`http://localhost:8000${book.coverImage}`}
+                  src={toBackendAssetUrl(book.coverImage)}
                   alt={book.title}
+                  data-testid="view-book-cover-image"
                   className="w-32 md:w-40 aspect-[3/4] object-cover rounded-lg shadow-md"
                 />
               ) : (
@@ -130,6 +132,7 @@ const ViewBookPage = () => {
             <div className="flex items-center justify-between">
               <button
                 onClick={handlePreviousChapter}
+                data-testid="view-book-previous-button"
                 disabled={currentChapterIndex === 0}
                 className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -148,6 +151,7 @@ const ViewBookPage = () => {
 
               <button
                 onClick={handleNextChapter}
+                data-testid="view-book-next-button"
                 disabled={currentChapterIndex === book.chapters.length - 1}
                 className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -186,6 +190,7 @@ const ViewBookPage = () => {
             {book.chapters.map((chapter, index) => (
               <button
                 key={index}
+                data-testid={`view-book-chapter-${index}`}
                 onClick={() => setCurrentChapterIndex(index)}
                 className={`w-full text-left p-3 rounded-lg transition-colors ${currentChapterIndex === index
                   ? "bg-primary/10 border-2 border-primary"
