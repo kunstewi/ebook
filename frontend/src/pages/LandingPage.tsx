@@ -36,9 +36,9 @@ const LandingPage = () => {
           </div>
           <div className="flex items-center space-x-3">
             <Link to="/login" className="text-sm font-medium text-gray-700 hover:text-primary transition-colors px-3 py-2">
-              Login
+              <span data-testid="landing-nav-login">Login</span>
             </Link>
-            <Link to="/signup" className="text-sm font-medium text-white bg-primary hover:bg-orange-600 px-5 py-2 rounded-full transition-colors shadow-sm">
+            <Link to="/signup" data-testid="landing-nav-signup" className="text-sm font-medium text-white bg-primary hover:bg-orange-600 px-5 py-2 rounded-full transition-colors shadow-sm">
               Sign Up
             </Link>
           </div>
@@ -61,12 +61,14 @@ const LandingPage = () => {
           <div className="flex justify-center space-x-4">
             <Link
               to="/signup"
+              data-testid="landing-hero-signup"
               className="px-8 py-4 bg-primary hover:bg-orange-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
             >
               Get Started Free
             </Link>
             <Link
               to="/login"
+              data-testid="landing-hero-login"
               className="px-8 py-4 bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-gray-200"
             >
               Sign In
@@ -142,7 +144,7 @@ const LandingPage = () => {
             </div>
           ) : books.length > 0 ? (
             // 1 mobile, 2 tablet (sm), 3 desktop (lg)
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div data-testid="public-books-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {books.map((book) => (
                 <PublicBookCard key={book._id} book={book} />
               ))}
@@ -169,6 +171,7 @@ const LandingPage = () => {
           </p>
           <Link
             to="/signup"
+            data-testid="landing-cta-signup"
             className="inline-block px-8 py-4 bg-primary hover:bg-orange-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
           >
             Create Your First Book

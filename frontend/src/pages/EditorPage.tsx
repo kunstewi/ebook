@@ -19,6 +19,7 @@ import API_PATHS from "../utils/apiPaths";
 import toast from "react-hot-toast";
 import MDEditor from "@uiw/react-md-editor";
 import type { Book, Chapter, BookParams } from "../types/book";
+import { toBackendAssetUrl } from "../utils/runtimeConfig";
 
 const EditorPage = () => {
   const { bookId } = useParams<BookParams>();
@@ -259,6 +260,7 @@ const EditorPage = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setShowAIModal(true)}
+                data-testid="editor-ai-button"
                 className="flex items-center space-x-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
               >
                 <Sparkles className="h-4 w-4" />
@@ -266,6 +268,7 @@ const EditorPage = () => {
               </button>
               <button
                 onClick={() => setShowExportModal(true)}
+                data-testid="editor-export-button"
                 className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
               >
                 <Download className="h-4 w-4" />
@@ -273,6 +276,7 @@ const EditorPage = () => {
               </button>
               <button
                 onClick={handleTogglePublish}
+                data-testid="editor-publish-button"
                 disabled={saving}
                 className={`flex items-center space-x-2 px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 ${book.status === "published"
                   ? "bg-gray-600 hover:bg-gray-700"
@@ -293,6 +297,7 @@ const EditorPage = () => {
               </button>
               <button
                 onClick={handleSave}
+                data-testid="editor-save-button"
                 disabled={saving}
                 className="flex items-center space-x-2 px-4 py-2 bg-primary hover:bg-orange-600 text-white rounded-lg transition-colors disabled:opacity-50"
               >
@@ -311,6 +316,7 @@ const EditorPage = () => {
                 <h2 className="font-semibold text-gray-900">Chapters</h2>
                 <button
                   onClick={handleAddChapter}
+                  data-testid="editor-add-chapter-button"
                   className="p-1 hover:bg-gray-100 rounded transition-colors"
                 >
                   <Plus className="h-5 w-5 text-primary" />
@@ -320,6 +326,7 @@ const EditorPage = () => {
                 {book.chapters.map((chapter, index) => (
                   <div
                     key={index}
+                    data-testid={`editor-chapter-item-${index}`}
                     onClick={() => setActiveChapterIndex(index)}
                     className={`p-3 rounded-lg cursor-pointer transition-colors ${activeChapterIndex === index
                       ? "bg-primary/10 border-2 border-primary"
@@ -343,6 +350,7 @@ const EditorPage = () => {
                             e.stopPropagation();
                             handleDeleteChapter(index);
                           }}
+                          data-testid={`editor-delete-chapter-${index}`}
                           className="ml-2 p-1 hover:bg-red-100 rounded text-red-600"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -361,8 +369,9 @@ const EditorPage = () => {
                 <div className="relative aspect-[3/4] w-full">
                   {book.coverImage ? (
                     <img
-                      src={`http://localhost:8000${book.coverImage}`}
+                      src={toBackendAssetUrl(book.coverImage)}
                       alt="Book cover"
+                      data-testid="editor-cover-image"
                       className="w-full h-full object-cover rounded-lg"
                     />
                   ) : (
@@ -374,6 +383,7 @@ const EditorPage = () => {
                     Upload
                     <input
                       type="file"
+                      data-testid="editor-cover-input"
                       accept="image/*"
                       onChange={handleCoverUpload}
                       className="hidden"
@@ -393,6 +403,7 @@ const EditorPage = () => {
                 </label>
                 <input
                   type="text"
+                  data-testid="editor-chapter-title-input"
                   value={currentChapter.title}
                   onChange={(e) => handleChapterChange("title", e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
@@ -405,6 +416,7 @@ const EditorPage = () => {
                   Chapter Description
                 </label>
                 <textarea
+                  data-testid="editor-chapter-description-input"
                   value={currentChapter.description}
                   onChange={(e) =>
                     handleChapterChange("description", e.target.value)
@@ -419,7 +431,7 @@ const EditorPage = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Chapter Content
                 </label>
-                <div data-color-mode="light">
+                <div data-color-mode="light" data-testid="chapter-content-editor">
                   <MDEditor
                     value={currentChapter.content}
                     onChange={(value) => handleChapterChange("content", value || "")}
@@ -444,6 +456,7 @@ const EditorPage = () => {
             <div className="space-y-3">
               <button
                 onClick={handleGenerateChapterContent}
+                data-testid="ai-generate-content-button"
                 disabled={aiLoading}
                 className="w-full px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50 text-left"
               >
@@ -451,6 +464,7 @@ const EditorPage = () => {
               </button>
               <button
                 onClick={() => handleImproveContent("grammar")}
+                data-testid="ai-improve-grammar-button"
                 disabled={aiLoading}
                 className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 text-left"
               >
@@ -458,6 +472,7 @@ const EditorPage = () => {
               </button>
               <button
                 onClick={() => handleImproveContent("clarity")}
+                data-testid="ai-improve-clarity-button"
                 disabled={aiLoading}
                 className="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50 text-left"
               >
@@ -465,6 +480,7 @@ const EditorPage = () => {
               </button>
               <button
                 onClick={() => handleImproveContent("expand")}
+                data-testid="ai-expand-content-button"
                 disabled={aiLoading}
                 className="w-full px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors disabled:opacity-50 text-left"
               >
@@ -472,6 +488,7 @@ const EditorPage = () => {
               </button>
               <button
                 onClick={() => setShowAIModal(false)}
+                data-testid="ai-cancel-button"
                 className="w-full px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Cancel
@@ -497,24 +514,28 @@ const EditorPage = () => {
             <div className="space-y-3">
               <button
                 onClick={() => handleExport("pdf")}
+                data-testid="export-pdf-button"
                 className="w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-left"
               >
                 Export as PDF
               </button>
               <button
                 onClick={() => handleExport("docx")}
+                data-testid="export-docx-button"
                 className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-left"
               >
                 Export as DOCX
               </button>
               <button
                 onClick={() => handleExport("markdown")}
+                data-testid="export-markdown-button"
                 className="w-full px-4 py-3 bg-gray-700 hover:bg-gray-800 text-white rounded-lg transition-colors text-left"
               >
                 Export as Markdown
               </button>
               <button
                 onClick={() => setShowExportModal(false)}
+                data-testid="export-cancel-button"
                 className="w-full px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Cancel

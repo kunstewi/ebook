@@ -67,6 +67,7 @@ const LoginPage = () => {
                   <input
                     id="email"
                     type="email"
+                    data-testid="login-email-input"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -88,6 +89,7 @@ const LoginPage = () => {
                   <input
                     id="password"
                     type="password"
+                    data-testid="login-password-input"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -100,6 +102,7 @@ const LoginPage = () => {
               {/* Submit Button */}
               <button
                 type="submit"
+                data-testid="login-submit-button"
                 disabled={loading}
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
@@ -111,7 +114,7 @@ const LoginPage = () => {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Don't have an account?{" "}
-                <Link to="/signup" className="font-medium text-primary hover:text-orange-600">
+                <Link to="/signup" data-testid="login-signup-link" className="font-medium text-primary hover:text-orange-600">
                   Sign up
                 </Link>
               </p>
@@ -120,7 +123,7 @@ const LoginPage = () => {
 
           {/* Back to Home */}
           <div className="mt-8 text-center border-t border-gray-100 pt-6">
-            <Link to="/" className="text-sm text-gray-500 hover:text-primary transition-colors inline-block">
+            <Link to="/" data-testid="login-home-link" className="text-sm text-gray-500 hover:text-primary transition-colors inline-block">
               ← Back to Home
             </Link>
           </div>

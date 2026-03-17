@@ -1,8 +1,9 @@
 import axios from "axios";
+import { API_BASE_URL } from "./runtimeConfig";
 
 // Create axios instance with base configuration
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:8000/api",
+    baseURL: API_BASE_URL,
 });
 
 // Request interceptor to add auth token

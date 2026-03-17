@@ -26,22 +26,25 @@ const Navbar = () => {
                     <div className="flex items-center space-x-4">
                         {isAuthenticated ? (
                             <>
-                                <Link
-                                    to="/dashboard"
-                                    className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 transition-colors"
-                                >
+                    <Link
+                        to="/dashboard"
+                        data-testid="navbar-dashboard-link"
+                        className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 transition-colors"
+                    >
                                     <Home className="h-4 w-4" />
                                     <span>Dashboard</span>
                                 </Link>
-                                <Link
-                                    to="/profile"
-                                    className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 transition-colors"
-                                >
+                    <Link
+                        to="/profile"
+                        data-testid="navbar-profile-link"
+                        className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 transition-colors"
+                    >
                                     <User className="h-4 w-4" />
                                     <span>{user?.name || "Profile"}</span>
                                 </Link>
                                 <button
                                     onClick={handleLogout}
+                                    data-testid="navbar-logout-button"
                                     className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 transition-colors"
                                 >
                                     <LogOut className="h-4 w-4" />
@@ -52,12 +55,14 @@ const Navbar = () => {
                             <>
                                 <Link
                                     to="/login"
+                                    data-testid="navbar-login-link"
                                     className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors"
                                 >
                                     Login
                                 </Link>
                                 <Link
                                     to="/signup"
+                                    data-testid="navbar-signup-link"
                                     className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-orange-600 rounded-md transition-colors"
                                 >
                                     Sign Up

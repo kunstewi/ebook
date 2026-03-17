@@ -78,6 +78,7 @@ const SignupPage = () => {
                   <input
                     id="name"
                     type="text"
+                    data-testid="signup-name-input"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -99,6 +100,7 @@ const SignupPage = () => {
                   <input
                     id="email"
                     type="email"
+                    data-testid="signup-email-input"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -120,6 +122,7 @@ const SignupPage = () => {
                   <input
                     id="password"
                     type="password"
+                    data-testid="signup-password-input"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -142,6 +145,7 @@ const SignupPage = () => {
                   <input
                     id="confirmPassword"
                     type="password"
+                    data-testid="signup-confirm-password-input"
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -155,6 +159,7 @@ const SignupPage = () => {
               {/* Submit Button */}
               <button
                 type="submit"
+                data-testid="signup-submit-button"
                 disabled={loading}
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
@@ -166,7 +171,7 @@ const SignupPage = () => {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Already have an account?{" "}
-                <Link to="/login" className="font-medium text-primary hover:text-orange-600">
+                <Link to="/login" data-testid="signup-login-link" className="font-medium text-primary hover:text-orange-600">
                   Sign in
                 </Link>
               </p>
@@ -175,7 +180,7 @@ const SignupPage = () => {
 
           {/* Back to Home */}
           <div className="mt-6 text-center border-t border-gray-100 pt-4">
-            <Link to="/" className="text-sm text-gray-500 hover:text-primary transition-colors inline-block">
+            <Link to="/" data-testid="signup-home-link" className="text-sm text-gray-500 hover:text-primary transition-colors inline-block">
               ← Back to Home
             </Link>
           </div>

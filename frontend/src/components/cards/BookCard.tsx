@@ -2,6 +2,7 @@ import React from "react";
 import { BookOpen, Eye, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { Book } from "../../types/book";
+import { toBackendAssetUrl } from "../../utils/runtimeConfig";
 
 interface BookCardProps {
   book: Book;
@@ -26,12 +27,12 @@ const BookCard = ({ book, onDelete }: BookCardProps) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
+    <div data-testid={`book-card-${book._id}`} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
       {/* Book Cover */}
       <div className="aspect-[3/4] bg-gradient-to-br from-primary/20 to-orange-200 flex items-center justify-center relative overflow-hidden">
         {book.coverImage ? (
-          <img
-            src={`http://localhost:8000${book.coverImage}`}
+            <img
+            src={toBackendAssetUrl(book.coverImage)}
             alt={book.title}
             className="w-full h-full object-cover"
           />
@@ -65,6 +66,7 @@ const BookCard = ({ book, onDelete }: BookCardProps) => {
         <div className="flex items-center space-x-2">
           <button
             onClick={handleView}
+            data-testid={`book-card-view-${book._id}`}
             className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-sm font-medium transition-colors"
           >
             <Eye className="h-4 w-4" />
@@ -72,6 +74,7 @@ const BookCard = ({ book, onDelete }: BookCardProps) => {
           </button>
           <button
             onClick={handleEdit}
+            data-testid={`book-card-edit-${book._id}`}
             className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-primary hover:bg-orange-600 text-white rounded-md text-sm font-medium transition-colors"
           >
             <Edit className="h-4 w-4" />
@@ -79,6 +82,7 @@ const BookCard = ({ book, onDelete }: BookCardProps) => {
           </button>
           <button
             onClick={handleDelete}
+            data-testid={`book-card-delete-${book._id}`}
             className="flex items-center justify-center px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-md text-sm font-medium transition-colors"
           >
             <Trash2 className="h-4 w-4" />

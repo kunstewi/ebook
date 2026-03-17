@@ -77,6 +77,7 @@ const ProfilePage = () => {
             {!editing && (
               <button
                 onClick={() => setEditing(true)}
+                data-testid="profile-edit-button"
                 className="px-4 py-2 bg-primary hover:bg-orange-600 text-white rounded-lg transition-colors"
               >
                 Edit Profile
@@ -105,6 +106,7 @@ const ProfilePage = () => {
                 </label>
                 <input
                   type="url"
+                  data-testid="profile-avatar-input"
                   value={formData.avatar}
                   onChange={(e) =>
                     setFormData({ ...formData, avatar: e.target.value })
@@ -127,6 +129,7 @@ const ProfilePage = () => {
                 </div>
                 <input
                   type="text"
+                  data-testid="profile-name-input"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
@@ -149,6 +152,7 @@ const ProfilePage = () => {
                 </div>
                 <input
                   type="email"
+                  data-testid="profile-email-input"
                   value={user?.email || ""}
                   disabled
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
@@ -181,6 +185,7 @@ const ProfilePage = () => {
                         </div>
                         <input
                           type="password"
+                          data-testid="profile-password-input"
                           value={formData.password}
                           onChange={(e) =>
                             setFormData({ ...formData, password: e.target.value })
@@ -202,6 +207,7 @@ const ProfilePage = () => {
                         </div>
                         <input
                           type="password"
+                          data-testid="profile-confirm-password-input"
                           value={formData.confirmPassword}
                           onChange={(e) =>
                             setFormData({
@@ -226,12 +232,14 @@ const ProfilePage = () => {
                 <button
                   type="button"
                   onClick={handleCancel}
+                  data-testid="profile-cancel-button"
                   className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
+                  data-testid="profile-save-button"
                   disabled={loading}
                   className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-primary hover:bg-orange-600 text-white rounded-lg transition-colors disabled:opacity-50"
                 >
