@@ -111,15 +111,24 @@ export const createAuthStorageState = async (
   session: SeedSession
 ): Promise<string> => {
   const context = await browser.newContext();
-  const page = await context.newPage();
-  await applyAuthState(page, session);
-
   const storageDir = path.join(os.tmpdir(), "ebook-playwright-auth");
   fs.mkdirSync(storageDir, { recursive: true });
   const storagePath = path.join(storageDir, `${uniqueId("storage")}.json`);
 
-  await context.storageState({ path: storagePath });
-  await context.close();
+  let page: Page | undefined;
+
+  try {
+    page = await context.newPage();
+    await applyAuthState(page, session);
+    await context.storageState({ path: storagePath });
+  } finally {
+    if (page) {
+      await page.close();
+    }
+
+    await context.close();
+  }
+
   return storagePath;
 };
 
