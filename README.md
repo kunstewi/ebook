@@ -1,497 +1,623 @@
-## Migration
+# eBook Creator
 
-### Auth Context tsx migration
+An AI-assisted full-stack eBook platform for writing, organizing, publishing, reading, and exporting books. The project is split into three workspaces:
 
-- Added type ReactNode and all shared domain types from the new types/index.ts.
-```tsx
-- import React, { createContext, useState, useContext, useEffect } from "react";
-+ import React, { createContext, useState, useContext, useEffect, type ReactNode } from "react";
-+ import type { User, AuthResult, AuthContextValue } from "../types/index";
+- `frontend/` for the React + Vite web app
+- `backend/` for the Express + MongoDB API
+- `tests/` for Playwright end-to-end coverage
+
+## Chapterwise Index
+
+1. [Chapter 1. Project Snapshot](#chapter-1-project-snapshot)
+2. [Chapter 2. Product Journey](#chapter-2-product-journey)
+3. [Chapter 3. Core Features](#chapter-3-core-features)
+4. [Chapter 4. Tech Stack](#chapter-4-tech-stack)
+5. [Chapter 5. System Architecture](#chapter-5-system-architecture)
+6. [Chapter 6. Folder Structure](#chapter-6-folder-structure)
+7. [Chapter 7. Local Setup and Run Guide](#chapter-7-local-setup-and-run-guide)
+8. [Chapter 8. Environment Variables](#chapter-8-environment-variables)
+9. [Chapter 9. API Overview](#chapter-9-api-overview)
+10. [Chapter 10. Testing Strategy](#chapter-10-testing-strategy)
+11. [Chapter 11. Data Model](#chapter-11-data-model)
+12. [Chapter 12. Migration Details](#chapter-12-migration-details)
+13. [Chapter 13. Screenshot Placeholder Map](#chapter-13-screenshot-placeholder-map)
+
+## Chapter 1. Project Snapshot
+
+eBook Creator helps a user move from idea to publishable digital book inside one app. It combines authentication, a personal dashboard, a chapter-based editor, AI writing assistance, public publishing, profile management, cover uploads, and export flows for PDF, DOCX, and Markdown.
+
+### What the current product supports
+
+- Public landing page with published book discovery
+- User signup, login, logout, and protected routes
+- Dashboard for creating, listing, and deleting personal books
+- Chapter-based editing with Markdown content
+- AI-assisted chapter generation and content improvement
+- Book cover upload support via `/uploads`
+- Draft or published status management
+- Reader view for navigating chapter-by-chapter content
+- Profile editing for name, avatar, and password
+- Export to PDF, DOCX, and Markdown
+
+## Chapter 2. Product Journey
+
+### 2.1 Landing page and public catalog
+
+The landing page introduces the platform, highlights major capabilities, and shows published books pulled from the public books endpoint. This is the public entry point for unauthenticated visitors.
+
+**Suggested screenshot placeholder**
+
+Path: `docs/screenshots/chapter-02-landing-page.png`  
+Markdown:
+
+```md
+![Landing Page](docs/screenshots/chapter-02-landing-page.png)
 ```
 
-- Context Creation: Original had no argument at all — now fully typed with a generic and an explicit null default
-```tsx
-- const AuthContext = createContext();
-+ const AuthContext = createContext<AuthContextValue | null>(null);
+### 2.2 Signup and login
+
+Users can register, log in, and then access protected routes through JWT-based authentication. The frontend stores the token and user in `localStorage`, while `axiosInstance` injects the `Authorization` header automatically.
+
+**Suggested screenshot placeholder**
+
+Path: `docs/screenshots/chapter-02-auth-flow.png`  
+Markdown:
+
+```md
+![Signup and Login Flow](docs/screenshots/chapter-02-auth-flow.png)
 ```
 
--  useAuth — return type added
-```tsx
-- export const useAuth = () => {
-+ export const useAuth = (): AuthContextValue => {}
+### 2.3 Dashboard
+
+The dashboard is the writer's home screen. It loads the authenticated user's books, supports creating a new book from a modal, and lets the user delete an existing book.
+
+**Suggested screenshot placeholder**
+
+Path: `docs/screenshots/chapter-02-dashboard.png`  
+Markdown:
+
+```md
+![Dashboard](docs/screenshots/chapter-02-dashboard.png)
 ```
 
-- AuthProvider - children typed
-```tsx
-- export const useAuth = () => {
-+ export const useAuth = (): AuthContextValue => {}
+### 2.4 Editor
+
+The editor is the core authoring experience. A user can:
+
+- add and remove chapters
+- edit chapter titles, descriptions, and Markdown content
+- save book updates
+- upload a cover image
+- publish or unpublish a book
+- open AI actions for content generation or improvement
+- export the book into supported file formats
+
+**Suggested screenshot placeholder**
+
+Path: `docs/screenshots/chapter-02-editor.png`  
+Markdown:
+
+```md
+![Editor Page](docs/screenshots/chapter-02-editor.png)
 ```
 
-- useState - typed generics
-```tsx
-- const [user, setUser] = useState(null);
-- const [token, setToken] = useState(null);
-+ const [user, setUser] = useState<User | null>(null);
-+ const [token, setToken] = useState<string | null>(null);
+### 2.5 Reader view
+
+The reader view renders a book with its cover, chapter navigation, chapter list, and Markdown-rendered content. It is useful both as a preview and as an in-app reading experience for the owner.
+
+**Suggested screenshot placeholder**
+
+Path: `docs/screenshots/chapter-02-reader-view.png`  
+Markdown:
+
+```md
+![Reader View](docs/screenshots/chapter-02-reader-view.png)
 ```
 
-- Async Functions - explicit return types
+### 2.6 Profile settings
 
-register
-before: implicit Promise<any>	after: Promise<AuthResult>
+The profile page allows the authenticated user to update their display name, avatar URL, and password while keeping email read-only.
 
-login
-before: implicit Promise<any>	after: Promise<AuthResult>
+**Suggested screenshot placeholder**
 
-logout
-before: implicit void	after: explicit ():void
+Path: `docs/screenshots/chapter-02-profile.png`  
+Markdown:
 
-fetchProfile
-before: implicit Promise<any>	after: Promise<User | null>
-
-updateProfile
-before: implicit Promise<any>	after: Promise<AuthResult & { user?: User }>
-
-
-- Error handling — typed + ?? instead of ||
-```tsx
-- } catch (error) {
--   const message = error.response?.data?.message || "...";
-+ } catch (error: unknown) {
-+   const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message ?? "...";
+```md
+![Profile Settings](docs/screenshots/chapter-02-profile.png)
 ```
 
-- value object — explicitly typed
-```tsx
-- const value = { user, token, loading, ... };
-+ const value: AuthContextValue = { user, token, loading, ... };
+## Chapter 3. Core Features
+
+### 3.1 Authoring workflow
+
+- create a new book with title, subtitle, and author
+- manage a chapter list inside a dedicated editor
+- write in Markdown using `@uiw/react-md-editor`
+- preview chapter content in the reader experience
+
+### 3.2 AI assistance
+
+The backend exposes four AI endpoints:
+
+- `POST /api/ai/generate-chapter`
+- `POST /api/ai/improve-content`
+- `POST /api/ai/generate-outline`
+- `POST /api/ai/generate-title`
+
+The current frontend actively uses:
+
+- chapter generation
+- content improvement for grammar, clarity, and expansion
+
+The outline and title endpoints already exist in the backend and can be wired into the UI later.
+
+### 3.3 Publishing and discovery
+
+- books can be stored as `draft` or `published`
+- published books appear in the public landing page catalog
+- private dashboard routes remain protected behind authentication
+
+### 3.4 Export capabilities
+
+- PDF export using `pdfkit`
+- DOCX export using `docx`
+- Markdown export using plain text response generation
+
+### 3.5 Media handling
+
+- cover images are uploaded through `multer`
+- backend serves static assets from `/uploads`
+- frontend resolves backend asset URLs through `toBackendAssetUrl`
+
+## Chapter 4. Tech Stack
+
+| Layer | Stack |
+| --- | --- |
+| Frontend | React 19, TypeScript, Vite, React Router, Tailwind CSS, Axios, React Hot Toast, UIW Markdown Editor |
+| Backend | Node.js, Express 5, TypeScript, Mongoose, JWT, Bcrypt, Multer |
+| AI | Google Generative AI SDK |
+| Export | PDFKit, `docx`, Markdown |
+| Unit/Integration Testing | Jest, Supertest, MongoMemoryServer |
+| E2E Testing | Playwright |
+
+## Chapter 5. System Architecture
+
+### 5.1 High-level flow
+
+```mermaid
+flowchart LR
+    U["User"] --> F["Frontend (React + Vite)"]
+    F --> A["Axios Client + Auth Context"]
+    A --> B["Backend API (Express)"]
+    B --> D["MongoDB"]
+    B --> G["Gemini API"]
+    B --> X["Export Generators (PDF/DOCX/Markdown)"]
+    B --> S["Uploads Directory"]
 ```
 
-### EditorPage.tsx migration
+### 5.2 Runtime responsibilities
 
-- Imports - dded AxiosError, Book, Chapter type imports.
-- useParams - useParams<{ bookId: string }>() — eliminates undefined from type.
-- useState(null) - → useState<Book | null>(null)
-- handleAddChapter - Added if (!book) return guard
-- handleDeleteChapter(index) - Typed number, added if (!book) return
-- handleChapterChange(field, value) - yped keyof Chapter, string, added if (!book) return
-- handleGenerateChapterContent - Added if (!book) return
-- handleImproveContent - Added if (!book) return, typed param as union literal
-- handleExport(format) - yped param as "pdf" | "docx" | "markdown"
-- handleCoverUpload(e) - React.ChangeEvent<HTMLInputElement>, files?.[0] optional chain
-- ll API_PATHS calls - bookId! non-null assertion (safe — route always provides it)
-- Two catch blocks - Cast to AxiosError<{ message: string }>
-- if (!book) return null - Null guard before JSX accesses book
-- <textarea rows> - "2" → {2}
+#### Frontend
 
-### ViewBookPage.tsx migration
-- Book type import
-- useParams typed
-```tsx
-// Before   
-const { bookId } = useParams();           // bookId: string | undefined
+- `frontend/src/main.tsx` bootstraps `BrowserRouter`, `AuthProvider`, and the toast system
+- `frontend/src/App.tsx` defines public and protected routes
+- `frontend/src/context/AuthContext.tsx` manages session state and profile refresh/update actions
+- `frontend/src/utils/axiosInstance.ts` injects JWT headers and clears invalid sessions on `401`
 
-// After
-const { bookId } = useParams<{ bookId: string }>();  // bookId: string
-```
-- useState(null) → useState<Book | null>(null) TypeScript infers null as the null type with no Book shape — this gives it the full type.
-- bookId! non-null assertion on the API call
-```tsx
-API_PATHS.BOOKS.GET_BY_ID(bookId!)
-```
-- Null guard in handleNextChapter + before JSX
-```tsx
-// handleNextChapter
-if (!book) return;
+#### Backend
 
-// before JSX
-if (!book) return null;
-```
+- `backend/src/app.ts` wires middleware, static uploads, and route groups
+- `backend/src/server.ts` loads environment config, connects to MongoDB, and starts the HTTP server
+- route groups are split into auth, books, AI, and export APIs
+- controllers hold business logic for each route group
 
----
+#### E2E harness
 
-## Backend API Documentation
+- `backend/src/e2eServer.ts` is a dedicated in-memory API server for deterministic browser tests
+- `tests/playwright.config.ts` boots the e2e backend and the frontend dev server together
+- `tests/globalSetup.ts` resets state before the browser suite starts
 
+### 5.3 Route map
 
-## Base URL
-```
-http://localhost:8000
-```
+- `/api/auth` for registration, login, and profile
+- `/api/books` for CRUD, publishing, public listing, and cover uploads
+- `/api/ai` for AI-assisted writing helpers
+- `/api/export` for file generation
+- `/uploads` for serving uploaded cover images
 
-## Authentication
-Most endpoints require authentication using JWT tokens. Include the token in the Authorization header:
-```
-Authorization: Bearer <your_jwt_token>
-```
+## Chapter 6. Folder Structure
 
----
-
-## Authentication Endpoints
-
-### Register User
-**POST** `/api/auth/register`
-
-**Body:**
-```json
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123"
-}
+```text
+ebook/
+├── README.md
+├── backend/
+│   ├── src/
+│   │   ├── app.ts
+│   │   ├── server.ts
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── types/
+│   │   └── e2eServer.ts
+│   └── tests/
+│       ├── integration/
+│       ├── unit/
+│       └── helpers/
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── pages/
+│   │   ├── types/
+│   │   └── utils/
+│   └── public/
+├── tests/
+│   ├── e2e/
+│   ├── globalSetup.ts
+│   └── playwright.config.ts
+└── docs/
+    └── screenshots/
 ```
 
-**Response:**
-```json
-{
-  "message": "User registered successfully",
-  "token": "jwt_token_here"
-}
+## Chapter 7. Local Setup and Run Guide
+
+### 7.1 Prerequisites
+
+- Node.js 18+
+- npm
+- MongoDB running locally or a reachable MongoDB connection string
+- Gemini API key for real AI generation
+
+### 7.2 Install dependencies
+
+Run these once:
+
+```bash
+cd backend && npm install
+cd ../frontend && npm install
+cd ../tests && npm install
 ```
 
-### Login User
-**POST** `/api/auth/login`
+### 7.3 Start the backend
 
-**Body:**
-```json
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
+```bash
+cd backend
+npm run dev
 ```
 
-**Response:**
-```json
-{
-  "message": "Login successful",
-  "token": "jwt_token_here",
-  "user": {
-    "id": "user_id",
-    "name": "John Doe",
-    "email": "john@example.com"
-  }
-}
+### 7.4 Start the frontend
+
+```bash
+cd frontend
+npm run dev
 ```
 
-### Get Profile
-**GET** `/api/auth/profile`
+### 7.5 Important local port note
 
-**Headers:** `Authorization: Bearer <token>`
+The frontend fallback API URL is `http://localhost:8000/api`, while the backend dev server defaults to port `5000` unless `PORT` is set.
 
-**Response:**
-```json
-{
-  "id": "user_id",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "avatar": "",
-  "isPro": false
-}
+Use one of these two approaches:
+
+1. Set backend `PORT=8000`
+2. Or set frontend `VITE_API_BASE_URL=http://127.0.0.1:5000/api`
+
+Recommended local alignment:
+
+```env
+# backend/.env
+PORT=8000
 ```
 
-### Update Profile
-**PUT** `/api/auth/profile`
-
-**Headers:** `Authorization: Bearer <token>`
-
-**Body:**
-```json
-{
-  "name": "John Updated",
-  "avatar": "https://example.com/avatar.jpg",
-  "password": "newpassword123"
-}
+```env
+# frontend/.env
+VITE_API_BASE_URL=http://127.0.0.1:8000/api
 ```
 
----
+## Chapter 8. Environment Variables
 
-## Book Endpoints
+### 8.1 Backend
 
-### Create Book
-**POST** `/api/books`
+Create `backend/.env` with:
 
-**Headers:** `Authorization: Bearer <token>`
+```env
+MONGO_URI=mongodb://127.0.0.1:27017/ebook-db
+JWT_SECRET=replace-with-a-secure-secret
+GEMINI_API_KEY=your-gemini-api-key
+PORT=8000
+```
 
-**Body:**
+### 8.2 Frontend
+
+Create `frontend/.env` with:
+
+```env
+VITE_API_BASE_URL=http://127.0.0.1:8000/api
+```
+
+### 8.3 Test environment behavior
+
+- backend unit/integration tests set fallback `JWT_SECRET` and `GEMINI_API_KEY` automatically in `backend/tests/setup.ts`
+- Playwright uses the dedicated e2e backend and injects `VITE_API_BASE_URL=http://127.0.0.1:8000/api`
+- the e2e server provides its own fallback values and does not depend on MongoDB
+
+## Chapter 9. API Overview
+
+### 9.1 Auth API
+
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| `POST` | `/api/auth/register` | Public | Register a new user and return a JWT |
+| `POST` | `/api/auth/login` | Public | Login and return token plus user payload |
+| `GET` | `/api/auth/profile` | Private | Fetch the current user profile |
+| `PUT` | `/api/auth/profile` | Private | Update name, avatar, and optionally password |
+
+### 9.2 Book API
+
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| `GET` | `/api/books/public` | Public | List published books for the landing page |
+| `POST` | `/api/books` | Private | Create a book |
+| `GET` | `/api/books` | Private | List books owned by the authenticated user |
+| `GET` | `/api/books/:id` | Private | Fetch one owned book |
+| `PUT` | `/api/books/:id` | Private | Update book metadata, chapters, or status |
+| `DELETE` | `/api/books/:id` | Private | Delete a book |
+| `PUT` | `/api/books/cover/:id` | Private | Upload or replace a cover image |
+
+### 9.3 AI API
+
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| `POST` | `/api/ai/generate-chapter` | Private | Generate chapter content from chapter metadata |
+| `POST` | `/api/ai/improve-content` | Private | Improve existing content |
+| `POST` | `/api/ai/generate-outline` | Private | Generate a structured book outline |
+| `POST` | `/api/ai/generate-title` | Private | Generate possible titles and subtitles |
+
+### 9.4 Export API
+
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| `GET` | `/api/export/pdf/:id` | Private | Download the book as PDF |
+| `GET` | `/api/export/docx/:id` | Private | Download the book as DOCX |
+| `GET` | `/api/export/markdown/:id` | Private | Download the book as Markdown |
+
+### 9.5 Common request details
+
+Authenticated endpoints expect:
+
+```http
+Authorization: Bearer <jwt_token>
+```
+
+Example book payload:
+
 ```json
 {
   "title": "My First Book",
-  "author": "John Doe",
-  "subtitle": "A Journey Begins",
+  "subtitle": "A Practical Writing Journey",
+  "author": "Jane Doe",
+  "status": "draft",
   "chapters": [
     {
       "title": "Chapter 1",
-      "description": "Introduction",
-      "content": "This is the first chapter..."
+      "description": "Opening context",
+      "content": "## Intro\n\nThis is chapter content."
     }
   ]
 }
 ```
 
-### Get All Books
-**GET** `/api/books`
+Example AI generation payload:
 
-**Headers:** `Authorization: Bearer <token>`
-
-**Response:** Array of books
-
-### Get Book by ID
-**GET** `/api/books/:id`
-
-**Headers:** `Authorization: Bearer <token>`
-
-### Update Book
-**PUT** `/api/books/:id`
-
-**Headers:** `Authorization: Bearer <token>`
-
-**Body:** Same as Create Book
-
-### Delete Book
-**DELETE** `/api/books/:id`
-
-**Headers:** `Authorization: Bearer <token>`
-
-### Update Book Cover
-**PUT** `/api/books/cover/:id`
-
-**Headers:** 
-- `Authorization: Bearer <token>`
-- `Content-Type: multipart/form-data`
-
-**Body:** Form data with `coverImage` file field
-
----
-
-## AI Endpoints
-
-### Generate Chapter Content
-**POST** `/api/ai/generate-chapter`
-
-**Headers:** `Authorization: Bearer <token>`
-
-**Body:**
 ```json
 {
-  "title": "Introduction to AI",
-  "description": "Basic concepts of artificial intelligence",
-  "bookContext": "A beginner's guide to AI"
+  "title": "Chapter 3: The Breakthrough",
+  "description": "The turning point in the story",
+  "bookContext": "A startup founder's journey from idea to launch"
 }
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "content": "Generated chapter content..."
-}
-```
+Cover upload details:
 
-### Generate Book Outline
-**POST** `/api/ai/generate-outline`
+- route: `PUT /api/books/cover/:id`
+- content type: `multipart/form-data`
+- form field: `coverImage`
 
-**Headers:** `Authorization: Bearer <token>`
+## Chapter 10. Testing Strategy
 
-**Body:**
-```json
-{
-  "topic": "Machine Learning Basics",
-  "genre": "Educational",
-  "targetAudience": "Beginners",
-  "numberOfChapters": 10
-}
-```
+### 10.1 Backend unit and integration tests
 
-**Response:**
-```json
-{
-  "success": true,
-  "outline": {
-    "title": "Generated Book Title",
-    "subtitle": "Generated Subtitle",
-    "chapters": [
-      {
-        "title": "Chapter Title",
-        "description": "Chapter description"
-      }
-    ]
-  }
-}
-```
+Backend tests live in `backend/tests` and cover:
 
-### Improve Content
-**POST** `/api/ai/improve-content`
+- auth middleware
+- upload middleware
+- `User` model behavior
+- `Book` model behavior
+- auth API integration
+- app-level integration such as CORS and static uploads
 
-**Headers:** `Authorization: Bearer <token>`
+Key implementation details:
 
-**Body:**
-```json
-{
-  "content": "Your existing content here...",
-  "improvementType": "grammar"
-}
-```
+- Jest runs in-band with `ts-jest`
+- Supertest exercises Express routes directly
+- `mongodb-memory-server` provides an isolated in-memory MongoDB for tests
+- Gemini calls are mocked through `backend/tests/helpers/mockGemini.ts`
 
-**Improvement Types:**
-- `grammar` - Fix grammar and spelling
-- `clarity` - Improve clarity and readability
-- `expand` - Expand with more details
-- `simplify` - Simplify the text
-- (default) - General improvement
-
-**Response:**
-```json
-{
-  "success": true,
-  "improvedContent": "Improved content..."
-}
-```
-
-### Generate Title
-**POST** `/api/ai/generate-title`
-
-**Headers:** `Authorization: Bearer <token>`
-
-**Body:**
-```json
-{
-  "topic": "Web Development",
-  "genre": "Technical",
-  "keywords": "React, Node.js, Full-stack"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "titles": [
-    {
-      "title": "Main Title",
-      "subtitle": "Subtitle"
-    }
-  ]
-}
-```
-
----
-
-## Export Endpoints
-
-### Export to PDF
-**GET** `/api/export/pdf/:id`
-
-**Headers:** `Authorization: Bearer <token>`
-
-**Response:** PDF file download
-
-### Export to DOCX
-**GET** `/api/export/docx/:id`
-
-**Headers:** `Authorization: Bearer <token>`
-
-**Response:** DOCX file download
-
-### Export to Markdown
-**GET** `/api/export/markdown/:id`
-
-**Headers:** `Authorization: Bearer <token>`
-
-**Response:** Markdown file download
-
----
-
-## Error Responses
-
-All endpoints may return the following error responses:
-
-**400 Bad Request**
-```json
-{
-  "message": "Error description"
-}
-```
-
-**401 Unauthorized**
-```json
-{
-  "message": "Not authorized, no token"
-}
-```
-
-**404 Not Found**
-```json
-{
-  "message": "Resource not found"
-}
-```
-
-**500 Server Error**
-```json
-{
-  "message": "Server error"
-}
-```
-
----
-
-## Notes
-
-1. **AI Features**: Require `GEMINI_API_KEY` to be set in environment variables
-2. **File Uploads**: Book cover images are limited to 2MB and must be JPEG, JPG, PNG, or GIF
-3. **Authentication**: JWT tokens expire after 7 days
-4. **Export**: All export endpoints require the book to belong to the authenticated user
-
----
-
-## E2E Testing Status
-
-**Last Updated:** 2026-03-17  
-**Runner:** Playwright  
-**Workspace:** [`/Users/kanai/Projects/ebook/tests`](/Users/kanai/Projects/ebook/tests)
-
-### Current Status
-
-- The Playwright suite is now implemented and runnable end to end.
-- Current result: `19/19` tests passing.
-- Chromium runs the full suite.
-- Firefox and WebKit run smoke coverage for public routing and authentication flows.
-
-### What Is Covered
-
-| Area | Coverage |
-|------|----------|
-| Public routes | Landing page render, CTA navigation, protected-route redirect, published public books |
-| Authentication | Signup, login, invalid login, signup validation, logout |
-| Dashboard | Empty state, create-book validation, create book, list book, view/edit navigation, cancel delete, confirm delete |
-| Editor | Default chapter bootstrap, save persistence, add/delete chapter, publish toggle, AI actions |
-| Uploads & exports | Cover upload, PDF export, DOCX export, Markdown export |
-| Reader | No-content state, chapter navigation, chapter selection |
-| Profile | Edit profile, password confirmation validation, password-change relogin flow |
-
-### Test Architecture
-
-- The frontend uses an env-driven API base URL via `VITE_API_BASE_URL`.
-- The Playwright config starts:
-  - a dedicated in-memory e2e backend on port `8000`
-  - the Vite frontend on port `5173`
-- E2E-only seed/reset endpoints provide deterministic test setup and cleanup.
-- Stable `data-testid` selectors are added across key auth, dashboard, editor, reader, and profile controls.
-
-### Commands
+Commands:
 
 ```bash
-# from /Users/kanai/Projects/ebook/tests
+cd backend
+npm test
+npm run test:unit
+npm run test:integration
+npm run test:coverage
+```
+
+Coverage thresholds are configured globally in `backend/jest.config.js` at:
+
+- branches: `80`
+- functions: `80`
+- lines: `80`
+- statements: `80`
+
+### 10.2 Playwright end-to-end tests
+
+E2E tests live in `tests/` and validate real browser flows against a dedicated in-memory backend.
+
+Covered areas include:
+
+- auth smoke flows
+- public landing page behavior
+- dashboard book lifecycle
+- editor, AI, upload, and export flows
+- reader and profile settings flows
+
+How the suite works:
+
+- starts `backend/src/e2eServer.ts` on `127.0.0.1:8000`
+- starts the frontend dev server with `VITE_API_BASE_URL=http://127.0.0.1:8000/api`
+- runs a reset step in `tests/globalSetup.ts`
+- uses Chromium for full coverage and Firefox/WebKit for smoke coverage
+
+Commands:
+
+```bash
+cd tests
 npm run test:e2e
-
-# chromium full suite
 npm run test:e2e -- --project=chromium
-
-# list discovered tests
+npm run test:e2e -- --reporter=line
 npm run test:e2e -- --list
 ```
 
-### Remaining Work
+## Chapter 11. Data Model
 
-- Expand Firefox/WebKit beyond smoke coverage if full cross-browser parity is required.
-- Add CI wiring if you want this suite enforced on every pull request.
-- Replace the e2e mock backend with the real backend stack if you want browser coverage to exercise Mongo-backed persistence in CI.
+### 11.1 User
+
+Defined in `backend/src/models/User.ts`.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `name` | `string` | required |
+| `email` | `string` | required, unique, lowercase |
+| `password` | `string` | required, hashed before save, not selected by default |
+| `avatar` | `string` | optional URL-like string |
+| `isPro` | `boolean` | defaults to `false` |
+
+### 11.2 Book
+
+Defined in `backend/src/models/Book.ts`.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `userId` | `ObjectId` | owner reference |
+| `title` | `string` | required |
+| `subtitle` | `string` | optional |
+| `author` | `string` | required |
+| `coverImage` | `string` | upload path or external URL |
+| `chapters` | `Chapter[]` | nested chapter list |
+| `status` | `"draft" \| "published"` | defaults to `draft` |
+| `createdAt` | `Date` | auto-generated |
+| `updatedAt` | `Date` | auto-generated |
+
+### 11.3 Chapter
+
+Nested inside the book schema.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `title` | `string` | required |
+| `description` | `string` | optional summary |
+| `content` | `string` | Markdown content |
+
+## Chapter 12. Migration Details
+
+### 12.1 Current migration status
+
+This repository has already started a TypeScript hardening migration across key frontend flows. The most visible migrated areas are:
+
+- `frontend/src/context/AuthContext.tsx`
+- `frontend/src/pages/EditorPage.tsx`
+- `frontend/src/pages/ViewBookPage.tsx`
+- shared types in `frontend/src/types` and `backend/src/types`
+
+### 12.2 What changed in the recent TypeScript migration
+
+#### Auth context migration
+
+- `AuthContext` now uses an explicit `AuthContextValue | null` type
+- `useAuth` returns a typed context contract
+- provider `children` are typed with `ReactNode`
+- `user` and `token` state are explicitly typed
+- auth methods now expose explicit async return contracts
+- error handling uses safer `unknown` casting and nullish coalescing
+
+#### Editor page migration
+
+- route params are typed
+- editor state is typed as `Book | null`
+- chapter update helpers use typed `Chapter` keys
+- export format handling is narrowed to `"pdf" | "docx" | "markdown"`
+- AI improvement handling is narrowed to supported action types
+- null guards were added before book-dependent operations
+
+#### Reader page migration
+
+- route params are typed
+- book state is typed as `Book | null`
+- null guards prevent invalid access before the API payload loads
+
+### 12.3 Database migration reality in this repo
+
+There is currently no dedicated migration framework or versioned migration folder in the repository. Schema evolution is code-first through Mongoose models and application updates.
+
+That means a schema change usually requires updates in more than one place:
+
+1. Mongoose schema in `backend/src/models`
+2. shared backend types in `backend/src/types/index.ts`
+3. frontend types in `frontend/src/types`
+4. controllers, validation logic, and route payload handling
+5. e2e server contract in `backend/src/e2eServer.ts`
+6. backend unit/integration tests and Playwright helpers
+7. existing MongoDB documents if a new required field is introduced
+
+### 12.4 Recommended future migration checklist
+
+If you add a new field or change a contract, follow this order:
+
+1. Update the schema and TypeScript types first
+2. Update controller logic and request/response payloads
+3. Update frontend forms, pages, and API types
+4. Update the in-memory e2e server so browser tests stay aligned
+5. Update unit, integration, and e2e tests
+6. Backfill old data in MongoDB before making a new field mandatory in production
+
+## Chapter 13. Screenshot Placeholder Map
+
+Use the `docs/screenshots/` folder for project images. Suggested filenames:
+
+| Section | Suggested file |
+| --- | --- |
+| Landing page | `docs/screenshots/chapter-02-landing-page.png` |
+| Auth flow | `docs/screenshots/chapter-02-auth-flow.png` |
+| Dashboard | `docs/screenshots/chapter-02-dashboard.png` |
+| Editor | `docs/screenshots/chapter-02-editor.png` |
+| Reader view | `docs/screenshots/chapter-02-reader-view.png` |
+| Profile page | `docs/screenshots/chapter-02-profile.png` |
+| Architecture diagram screenshot, if needed | `docs/screenshots/chapter-05-architecture.png` |
+| Test report screenshot | `docs/screenshots/chapter-10-test-report.png` |
+
+Reusable Markdown snippet:
+
+```md
+![Descriptive Alt Text](docs/screenshots/your-image-file.png)
+```
+
+If you want, you can also add screenshots under each chapter using a short caption format like this:
+
+```md
+### UI Preview
+
+![Dashboard](docs/screenshots/chapter-02-dashboard.png)
+```
