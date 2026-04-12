@@ -53,13 +53,11 @@ The landing page introduces the platform, highlights major capabilities, and sho
 
 Users can register, log in, and then access protected routes through JWT-based authentication. The frontend stores the token and user in `localStorage`, while `axiosInstance` injects the `Authorization` header automatically.
 
-```md
+#### Signup
 ![Signup](docs/screenshots/signup.png)
-```
 
-```md
+#### Login
 ![Login](docs/screenshots/login.png)
-```
 
 ### 2.3 Dashboard
 
