@@ -45,9 +45,7 @@ eBook Creator helps a user move from idea to publishable digital book inside one
 
 The landing page introduces the platform, highlights major capabilities, and shows published books pulled from the public books endpoint. This is the public entry point for unauthenticated visitors.
 
-```md
 ![Landing Page](docs/screenshots/landing.png)
-```
 
 ### 2.2 Signup and login
 
@@ -63,14 +61,7 @@ Users can register, log in, and then access protected routes through JWT-based a
 
 The dashboard is the writer's home screen. It loads the authenticated user's books, supports creating a new book from a modal, and lets the user delete an existing book.
 
-**Suggested screenshot placeholder**
-
-Path: `docs/screenshots/chapter-02-dashboard.png`  
-Markdown:
-
-```md
-![Dashboard](docs/screenshots/chapter-02-dashboard.png)
-```
+![Dashboard](docs/screenshots/dashboard.png)
 
 ### 2.4 Editor
 
@@ -84,40 +75,19 @@ The editor is the core authoring experience. A user can:
 - open AI actions for content generation or improvement
 - export the book into supported file formats
 
-**Suggested screenshot placeholder**
-
-Path: `docs/screenshots/chapter-02-editor.png`  
-Markdown:
-
-```md
-![Editor Page](docs/screenshots/chapter-02-editor.png)
-```
+![Editor Page](docs/screenshots/editor.png)
 
 ### 2.5 Reader view
 
 The reader view renders a book with its cover, chapter navigation, chapter list, and Markdown-rendered content. It is useful both as a preview and as an in-app reading experience for the owner.
 
-**Suggested screenshot placeholder**
-
-Path: `docs/screenshots/chapter-02-reader-view.png`  
-Markdown:
-
-```md
-![Reader View](docs/screenshots/chapter-02-reader-view.png)
-```
+![Reader View](docs/screenshots/reader.png)
 
 ### 2.6 Profile settings
 
 The profile page allows the authenticated user to update their display name, avatar URL, and password while keeping email read-only.
 
-**Suggested screenshot placeholder**
-
-Path: `docs/screenshots/chapter-02-profile.png`  
-Markdown:
-
-```md
-![Profile Settings](docs/screenshots/chapter-02-profile.png)
-```
+![Profile Settings](docs/screenshots/profile.png)
 
 ## Chapter 3. Core Features
 
@@ -600,16 +570,3 @@ Use the `docs/screenshots/` folder for project images. Suggested filenames:
 | Architecture diagram screenshot, if needed | `docs/screenshots/chapter-05-architecture.png` |
 | Test report screenshot | `docs/screenshots/chapter-10-test-report.png` |
 
-Reusable Markdown snippet:
-
-```md
-![Descriptive Alt Text](docs/screenshots/your-image-file.png)
-```
-
-If you want, you can also add screenshots under each chapter using a short caption format like this:
-
-```md
-### UI Preview
-
-![Dashboard](docs/screenshots/chapter-02-dashboard.png)
-```
