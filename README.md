@@ -45,26 +45,20 @@ eBook Creator helps a user move from idea to publishable digital book inside one
 
 The landing page introduces the platform, highlights major capabilities, and shows published books pulled from the public books endpoint. This is the public entry point for unauthenticated visitors.
 
-**Suggested screenshot placeholder**
-
-Path: `docs/screenshots/chapter-02-landing-page.png`  
-Markdown:
-
 ```md
-![Landing Page](docs/screenshots/chapter-02-landing-page.png)
+![Landing Page](docs/screenshots/landing.png)
 ```
 
 ### 2.2 Signup and login
 
 Users can register, log in, and then access protected routes through JWT-based authentication. The frontend stores the token and user in `localStorage`, while `axiosInstance` injects the `Authorization` header automatically.
 
-**Suggested screenshot placeholder**
-
-Path: `docs/screenshots/chapter-02-auth-flow.png`  
-Markdown:
+```md
+![Signup](docs/screenshots/signup.png)
+```
 
 ```md
-![Signup and Login Flow](docs/screenshots/chapter-02-auth-flow.png)
+![Login](docs/screenshots/login.png)
 ```
 
 ### 2.3 Dashboard
